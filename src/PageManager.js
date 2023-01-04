@@ -1,0 +1,44 @@
+import puppeteer, { TimeoutError } from 'puppeteer';
+export async function newPage(headless) {
+    const browser = await puppeteer.launch({ headless: headless }); // 啟動瀏覽器，headless 設定為 false 可以看到瀏覽器運作的情況，true 為無頭瀏覽器
+    const page = await browser.newPage();
+    return page;
+}
+export class NYCUPageManager {
+
+    constructor(page) {
+        this.page = page;
+    }
+
+    async selectExamType(examCode) {
+        const typeSelector = 'select#ddlExamType';
+        await this.page.select(typeSelector, examCode); // 按下按鈕
+        try {
+            await this.page.waitForNavigation();
+        } catch (e) {
+            if (e instanceof TimeoutError) {
+                await this.page.reload();
+            }
+        }
+    }
+
+    async selectExamList(deptNo) {
+        const typeSelector = 'select#ddlExamList';
+        await this.page.select(typeSelector, deptNo); // 按下按鈕
+        try {
+            await this.page.waitForNavigation();
+        } catch (e) {
+            if (e instanceof TimeoutError) {
+                await this.page.reload();
+            }
+        }
+    }
+
+    async navigateToPage(url) {
+        await this.page.goto(url);
+    }
+
+    async waitForTimeout(ms) {
+        await this.page.waitForTimeout(ms)
+    }
+}
