@@ -61,8 +61,8 @@ export async function updateGroupsInfo() {
         })
         const resultHTML = await res.text();
         const $ = cheerio.load(resultHTML);
-        
-        
+
+
         const rankTable = new Map();
         let registered = 0;
         let want = 0;
@@ -78,30 +78,33 @@ export async function updateGroupsInfo() {
             //td:eq(3)是抓取第四欄的文字 => 正備取
             const rank = $(element).find("td:eq(3)").text().trim();
 
-            if (status == "已報到!") {
+            if (status == "完成報到") {
                 registered++;
             }
 
             if (rank.includes("正取")) {
+                want++;
+            }
+
+
+            const reserveProcess = updateReserveProcess(rank, status);
+            if (reserveProcess != null) {
+                groupInfo.reserveProcess = reserveProcess;
+            }
+
+
+            if (rank.includes("正取")) {
                 if (status.includes("待報到")) {
-                    currentReserve = "等待正取報到/放棄中";
+                   return "等待正取報到/放棄中";
                 }
-                currentReserve = "目前未有備取名額，再耐心等一下(❁´◡`❁)";
+                return "目前未有備取名額，再耐心等一下(❁´◡`❁)";
+            } else {
+                if (status.includes("備取")) {
+                    if (i > 0) {
+                        currentReserve = rankTable[i - 1].rank;
+                    }
+                }
             }
-
-
-    if (rankTable[i].rank.includes("正取")) {
-        if (rankTable[i].status.includes("待報到")) {
-            currentReserve = "等待正取報到/放棄中";
-        }
-        currentReserve = "目前未有備取名額，再耐心等一下(❁´◡`❁)";
-    } else {
-        if (rankTable[i].status.includes("備取")) {
-            if (i > 0) {
-                currentReserve = rankTable[i - 1].rank;
-            }
-        }
-    }
 
             const info = {
                 id: id,

@@ -9,12 +9,21 @@
 </head>
 
 <body>
-    <button onclick="getUserRank()">here</button>
+    <label for="groupInput">group input:</label>
     <input type="text" id="groupInput" value="" name="groupNo">
-    <button onclick="getReserveProcess()">enter</button>
+    <br>
+    <label for="userIdInput">user id:</label>
+    <input type="text" id="userIdInput" value="" name="userId">
+    <br>
+    <button onclick="getUserRank()">get user rank</button>
+    <button onclick="getReserveProcess()">get reserve process</button>
+
     <script>
         async function getUserRank() {
-            const url = 'http://127.0.0.1:3000/getUserRank?userId=A400016'
+            const groupInput = document.getElementById("groupInput");
+            const userIdInput = document.getElementById("userIdInput");
+
+            const url = `http://127.0.0.1:3000/getUserRank?groupNo=${groupInput.value}&userId=${userIdInput.value}`
             const res = await fetch(url, {
                     method: 'GET',
                 })
@@ -24,7 +33,7 @@
 
         async function getReserveProcess() {
             const groupInput = document.getElementById("groupInput");
-            const url = `http://127.0.0.1:3000/getReserveProcess?groupInput=${groupInput.value}`
+            const url = `http://127.0.0.1:3000/getReserveProcess?groupNo=${groupInput.value}`
             const res = await fetch(url, {
                 method: 'GET',
             })
