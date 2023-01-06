@@ -5,10 +5,21 @@ import fetch from 'node-fetch';
 //Reference:https://mealiy62307.medium.com/node-js-node-js-%E7%88%AC%E8%9F%B2%E8%88%87-line-bot-b94356fcd59d
 
 
-const NCKURegisterInfo = new Map();
+const NCKURegisterInfo = {
+    group: new Map()
+};
+
 
 export async function init() {
+    console.log("=== NKCU loading ===")
     await setGroupMap();
+    await updateGroupsInfo()
+    const process = getReserveProcess("1_382");
+    console.log(process);
+    const rank = getUserRank("1_382", "3820018")
+    console.log(rank)
+    console.log("=== NKCU done ===")
+
 }
 
 async function setGroupMap() {
@@ -18,8 +29,12 @@ async function setGroupMap() {
     })
     const resultJS = await res.text();
     const resultArr = resultJS.split('\n');
-    let examType;
+    let examNo;
     for (let i = 2; i < resultArr.length; i++) {
+        if (resultArr[i].includes("new Array();")) {
+            continue;
+        }
+
         if (resultArr[i].includes("A1['1']")) {
             examNo = 1;
         } else if (resultArr[i].includes("A1['2']")) {
@@ -36,7 +51,7 @@ async function setGroupMap() {
         //groupNo => 1_140 (examNo_groupNo)
         const groupNo = examNo + "_" + groupInfo[2].replace("]", "");
         const groupName = "[" + groupInfo[1];
-        NCKURegisterInfo.set(groupNo, {
+        NCKURegisterInfo.group.set(groupNo, {
             groupName: groupName,
             table: [],
             currentReserve: "",
@@ -47,7 +62,7 @@ async function setGroupMap() {
 }
 
 export async function updateGroupsInfo() {
-    for (let [groupNo, groupInfo] of NCKURegisterInfo) {
+    for (let [groupNo, groupInfo] of NCKURegisterInfo.group) {
         groupNo = groupNo.split('_');
         const examNo = groupNo[0];
         groupNo = groupNo[1];
@@ -92,20 +107,6 @@ export async function updateGroupsInfo() {
                 groupInfo.reserveProcess = reserveProcess;
             }
 
-
-            if (rank.includes("正取")) {
-                if (status.includes("待報到")) {
-                   return "等待正取報到/放棄中";
-                }
-                return "目前未有備取名額，再耐心等一下(❁´◡`❁)";
-            } else {
-                if (status.includes("備取")) {
-                    if (i > 0) {
-                        currentReserve = rankTable[i - 1].rank;
-                    }
-                }
-            }
-
             const info = {
                 id: id,
                 rank: rank,
@@ -113,47 +114,47 @@ export async function updateGroupsInfo() {
             }
             rankTable.set(id, info);
         })
+
+        groupInfo.table = rankTable;
+        groupInfo.registered = registered;
+        groupInfo.want = want;
     }
-    return rankTable;
+
+
+    function updateReserveProcess(rank, status) {
+        if (rank.includes("正取")) { //正取
+            return "等待正取報到/放棄中";
+        } else if (status.includes("備取")) { //備取且還未備取到
+            return null;
+        } else { //備取且空白(待報到)，已報到，放棄...等
+            return rank;
+        }
+    }
+
 }
 
-// export async function updateReserveProcess(groupNo) {
-//     const groupInfo = NCKUDepartmentInfo.get(groupNo);
-//     const rankTable = await getTable(groupNo);
-//     groupInfo.table = rankTable;
-let currentReserve = "--";
 
-//從最後一項開始
-for (let i = 1; i < rankTable.length; i++) {
-    if (rankTable[i].rank.includes("正取")) {
-        if (rankTable[i].status.includes("待報到")) {
-            currentReserve = "等待正取報到/放棄中";
-            break;
-        }
-        currentReserve = "目前未有備取名額，再耐心等一下(❁´◡`❁)";
+
+
+
+export function getUserRank(groupNo, userExamId) {
+    const table = NCKURegisterInfo.group.get(groupNo)?.table;
+    if (table == undefined) {
+        return null;
     } else {
-        if (rankTable[i].status.includes("備取")) {
-            if (i > 0) {
-                currentReserve = rankTable[i - 1].rank;
-            }
-        }
+        return table.get(userExamId);
     }
 }
-const departmentName = NCKURegisterInfo.get(groupNo).groupName;
 
-console.log(departmentName + "-備取進度:" + currentReserve);
+export function getReserveProcess(groupNo) {
+    const info = NCKURegisterInfo.group.get(groupNo);
+    if (info == undefined) {
+        return null;
+    }
 
-
-
-export async function getReserveProcess(groupNo) {
-    const groupInfo = NCKURegisterInfo.get(groupNo);
-    return groupInfo.currentReserve;
-}
-
-
-export async function getRank(groupNo, id) {
-    const groupInfo = NCKURegisterInfo.get(groupNo);
-    const rankTable = groupInfo.table;
-    const user = rankTable.find(user => user.id == id);
-    return user.rank;
+    return {
+        registered: info.registered,
+        want: info.want,
+        reserveProcess: info.reserveProcess
+    }
 }
