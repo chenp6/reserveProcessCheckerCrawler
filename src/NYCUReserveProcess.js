@@ -208,18 +208,12 @@ export async function updateGroupsInfo() {
      */
     function updateReserveProcess(rank, status) {
         if (rank == "正取" || rank == "直接") {
-            if (status == "") {
-                return "等待正取報到/放棄中";
-            }
-            return "目前未有備取名額，再耐心等一下(❁´◡`❁)";
-        } else { //備取
-            if (status == "備取") { //結束比對
-                return null;
-            } else { //空白(待報到)，已報到，放棄...等
-                return rank;
-            }
+            return "等待正取報到/放棄中";
+        } else if (status == "備取") { //備取且還未備取到
+            return null;
+        } else { //空白(待報到)，已報到，放棄...等
+            return rank;
         }
-
     }
 }
 
@@ -251,13 +245,12 @@ export function getUserRank(groupNo, userExamId) {
     if (table == undefined) {
         return null;
     } else {
-        console.log(table.get(userExamId))
         return table.get(userExamId);
     }
 }
 
 export function getReserveProcess(groupNo) {
-    const info = NYCURegisterInfo.group.get(groupNo);
+    const info = NYCURegisterInfo.group?.get(groupNo);
     if (info == undefined) {
         return null;
     }
