@@ -109,7 +109,7 @@ export async function updateGroupsInfo() {
             }
 
             const info = {
-                id: id,
+                index:index,
                 rank: rank,
                 status: status
             }
