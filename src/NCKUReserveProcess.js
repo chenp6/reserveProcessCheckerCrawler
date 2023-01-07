@@ -85,7 +85,7 @@ export async function updateGroupsInfo() {
 
         $("table > tbody > tr").each((index, element) => {
 
-            //td:eq(0)是抓取第二欄的文字 => 報到狀況
+            //td:eq(0)是抓取第一欄的文字 => 報到狀況
             const status = $(element).find("td:eq(0)").text().trim();
 
             //td:eq(1)是抓取第二欄的文字 => 准考證號
