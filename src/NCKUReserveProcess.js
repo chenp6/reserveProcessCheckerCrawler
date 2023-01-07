@@ -6,6 +6,7 @@ import fetch from 'node-fetch';
 
 
 const NCKURegisterInfo = {
+    exam: new Map([["1",{type:"碩士班甄試"}],["2",{type:"博士班甄試"}]]),
     group: new Map()
 };
 
