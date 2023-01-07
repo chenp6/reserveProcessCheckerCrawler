@@ -117,7 +117,7 @@ async function setGroupMap() {
 }
 
 export async function updateGroupsInfo() {
-    for (let [groupNo, groupInfo] of NYCURegisterInfo.group) {
+    for (const [groupNo, groupInfo] of NYCURegisterInfo.group) {
         const examNo = groupNo.split('_')[0];
 
         const examCode = NYCURegisterInfo.exam.get(examNo).code;
