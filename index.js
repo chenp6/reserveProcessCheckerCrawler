@@ -1,7 +1,4 @@
 import express, { json } from 'express'; //載入express框架模組
-import * as NCKU from './NCKUReserveProcess.js';
-import * as NYCU from './NYCUReserveProcess.js';
-import schedule from 'node-schedule';
 import cors from 'cors';
 let app = express();
 
