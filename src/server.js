@@ -25,3 +25,15 @@ app.listen(3000, () => {
     console.log(new Date() + "開始監聽port 3000!");
     init();
 });
+app.get("/getUserRank", async(req, res) => {
+    const schoolId = req.query.schoolId;
+    const userId = req.query.userId;
+    const groupNo = req.query.groupNo;
+
+    res.send({
+        index: schoolId,
+        rank: userId,
+        status: groupNo
+    });
+    return;
+});
