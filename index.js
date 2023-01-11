@@ -1,16 +1,14 @@
 import express, { json } from 'express'; //載入express框架模組
 import cors from 'cors';
+import home from "./src/home.js";
+
 let app = express();
 
 // Middlewares
 app.use(express.json());
 
 // Routes
-app.use('/src',express.static('./src'));
-app.get('/home',(req,res)=>{
-    let str = "index.html";  //引號內放入要切換的html檔案頁面
-    res.sendFile(str,{root:'./src'});
-});
+app.use("/home", home);
 
 // connection
 const port = process.env.PORT || 9001;
