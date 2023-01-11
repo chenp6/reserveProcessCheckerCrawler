@@ -22,8 +22,7 @@ app.use(cors({
 
 
 app.listen(3000, () => {
-    console.log(new Date() + "開始監聽port 3000!");
-    init();
+    console.log(new Date() + "開始監聽port 3000!");  
 });
 app.get("/getUserRank", async(req, res) => {
     const schoolId = req.query.schoolId;
