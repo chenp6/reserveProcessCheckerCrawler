@@ -8,8 +8,8 @@ app.use(express.json());
 // Routes
 app.use('/src',express.static('./src'));
 app.get('/home',(req,res)=>{
-    let str = "src/index.html";  //引號內放入要切換的html檔案頁面
-    res.sendFile(str);
+    let str = "index.html";  //引號內放入要切換的html檔案頁面
+    res.sendFile(str,{root:'./src'});
 });
 
 // connection
