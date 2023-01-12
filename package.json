@@ -20,7 +20,7 @@
     },
     "scripts": {
         "start": "node index.js",
-        "test-server": "node src/test-server.js",
+        "test-server": "node public/test-server.js",
         "test": "jest --coverage"
     },
     "name": "registercheckbot",
