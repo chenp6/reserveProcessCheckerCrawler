@@ -1,6 +1,9 @@
 import express, { json } from 'express'; //載入express框架模組
 import home from "./public/home.js";
-
+import cors from 'cors';
+app.use(cors({
+    origin: '*',
+}));
 
 let app = express();
 
@@ -23,6 +26,7 @@ app.get("/getUserRank", async(req, res, next) => {
         message: "The app is working properly!",
     });
 });
+
 // connection
 const port = process.env.PORT || 9001;
 app.listen(port, () => console.log(`Listening to port ${port}`));

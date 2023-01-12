@@ -14,10 +14,6 @@
             "dest": "public/index.html"
         },
         {
-            "src": "/copy",
-            "dest": "public/index copy.html"
-        },
-        {
             "src": "/(.+)",
             "dest": "/"
         }
