@@ -1,9 +1,9 @@
 import express, { json } from 'express'; //載入express框架模組
 import home from "./public/home.js";
-import cors from 'cors';
-app.use(cors({
-    origin: '*',
-}));
+// import cors from 'cors';
+// app.use(cors({
+//     origin: '*',
+// }));
 
 let app = express();
 
