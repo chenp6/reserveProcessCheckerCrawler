@@ -1,7 +1,7 @@
 import cheerio from 'cheerio';
 import fetch from 'node-fetch';
 import https from 'https';
-import { newPage, NYCUPageManager } from './PageManager.js';
+import { newPage, NYCUPageManager,navigateToPage } from './PageManager.js';
 //Example 
 /*
 const NYCURegisterInfo = {
@@ -41,7 +41,7 @@ export async function init() {
     // page = startNewPage(page);
     console.log("=== NYCU loading ===")
 
-    await pageManager.navigateToPage('https://enroll.nycu.edu.tw/');
+    await navigateToPage(page,'https://enroll.nycu.edu.tw/');
     await setGroupMap();
     // console.log(NYCUDepartmentInfo.group.get("112_A41"))
     // console.log(NYCUDepartmentInfo.group.get("112A_A41"))
@@ -190,7 +190,7 @@ export async function updateGroupsInfo() {
                 index: index,
                 rank: rank,
                 status: status
-            }
+            };
             rankTable.set(id, info);
 
 
@@ -243,7 +243,11 @@ function getIndexofItemStart(str) {
 export function getUserRank(groupNo, userExamId) {
     const table = NYCURegisterInfo.group.get(groupNo)?.table;
     if (table == undefined) {
-        return null;
+        return {
+            index: null,
+            rank: null,
+            status: null
+        };
     } else {
         return table.get(userExamId);
     }
@@ -252,12 +256,20 @@ export function getUserRank(groupNo, userExamId) {
 export function getReserveProcess(groupNo) {
     const info = NYCURegisterInfo.group?.get(groupNo);
     if (info == undefined) {
-        return null;
+        return {
+            registered: null,
+            want: null,
+            reserveProcess: null
+        };
+    } else {
+
+        return {
+            registered: info.registered,
+            want: info.want,
+            reserveProcess: info.reserveProcess
+        }
+
     }
 
-    return {
-        registered: info.registered,
-        want: info.want,
-        reserveProcess: info.reserveProcess
-    }
+
 }

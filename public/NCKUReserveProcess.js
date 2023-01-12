@@ -6,7 +6,10 @@ import fetch from 'node-fetch';
 
 
 const NCKURegisterInfo = {
-    exam: new Map([["1",{type:"碩士班甄試"}],["2",{type:"博士班甄試"}]]),
+    exam: new Map([
+        ["1", { type: "碩士班甄試" }],
+        ["2", { type: "博士班甄試" }]
+    ]),
     group: new Map()
 };
 
@@ -15,10 +18,10 @@ export async function init() {
     console.log("=== NKCU loading ===")
     await setGroupMap();
     await updateGroupsInfo()
-    const process = getReserveProcess("1_382");
-    console.log(process);
-    const rank = getUserRank("1_382", "3820018")
-    console.log(rank)
+        // const process = getReserveProcess("1_382");
+        // console.log(process);
+        // const rank = getUserRank("1_382", "3820018")
+        // console.log(rank)
     console.log("=== NKCU done ===")
 
 }
@@ -109,7 +112,7 @@ export async function updateGroupsInfo() {
             }
 
             const info = {
-                index:index,
+                index: index,
                 rank: rank,
                 status: status
             }
@@ -141,21 +144,32 @@ export async function updateGroupsInfo() {
 export function getUserRank(groupNo, userExamId) {
     const table = NCKURegisterInfo.group.get(groupNo)?.table;
     if (table == undefined) {
-        return null;
+        return {
+            index: null,
+            rank: null,
+            status: null
+        };
     } else {
         return table.get(userExamId);
     }
 }
 
+
 export function getReserveProcess(groupNo) {
     const info = NCKURegisterInfo.group.get(groupNo);
     if (info == undefined) {
-        return null;
+        return {
+            registered: null,
+            want: null,
+            reserveProcess: null
+        };
+    } else {
+        return {
+            registered: info.registered,
+            want: info.want,
+            reserveProcess: info.reserveProcess
+        }
+
     }
 
-    return {
-        registered: info.registered,
-        want: info.want,
-        reserveProcess: info.reserveProcess
-    }
 }

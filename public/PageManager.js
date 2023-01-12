@@ -1,9 +1,11 @@
 import puppeteer, { TimeoutError } from 'puppeteer';
+
 export async function newPage(headless) {
     const browser = await puppeteer.launch({ headless: headless }); // 啟動瀏覽器，headless 設定為 false 可以看到瀏覽器運作的情況，true 為無頭瀏覽器
     const page = await browser.newPage();
     return page;
 }
+
 export class NYCUPageManager {
 
     constructor(page) {
@@ -34,11 +36,12 @@ export class NYCUPageManager {
         }
     }
 
-    async navigateToPage(url) {
-        await this.page.goto(url);
-    }
 
-    async waitForTimeout(ms) {
-        await this.page.waitForTimeout(ms)
-    }
+}
+
+
+
+
+export async function navigateToPage(page, url) {
+    await page.goto(url);
 }

@@ -4,7 +4,7 @@ import * as NYCU from './NYCUReserveProcess.js';
 import schedule from 'node-schedule';
 import cors from 'cors';
 let app = express();
-
+const port = process.env.PORT||9001
 app.use(cors({
     origin: '*',
 }));

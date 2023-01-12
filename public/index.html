@@ -9,6 +9,21 @@
 </head>
 
 <body>
+    <select id="schoolSelect">
+        <option value="">
+            請選擇學校
+        </option>
+        <option value="NYCU">
+            國立交通大學
+        </option>
+        <option value="NCKU">
+            國立成功大學
+        </option>
+        <option value="CCU">
+            國立中正大學
+        </option>
+    </select>
+
     <label for="groupInput">group input:</label>
     <input type="text" id="groupInput" value="" name="groupNo">
     <br>
@@ -17,28 +32,42 @@
     <br>
     <button onclick="getUserRank()">get user rank</button>
     <button onclick="getReserveProcess()">get reserve process</button>
-
+    <div id="result"></div>
     <script>
+        reset();
+
+        function reset() {
+            document.getElementById("schoolSelect").selectedIndex = 0;
+        }
+
         async function getUserRank() {
+            const schoolSelect = document.getElementById("schoolSelect");
+            if (schoolSelect.value == "") {
+                return;
+            }
+
             const groupInput = document.getElementById("groupInput");
             const userIdInput = document.getElementById("userIdInput");
-
-            const url = `https://reserve-process-checker.vercel.app/getUserRank?groupNo=${groupInput.value}&userId=${userIdInput.value}`
+            const url = `https://reserve-process-checker.vercel.app/getUserRank?schoolId=${schoolSelect.value}&groupNo=${groupInput.value}&userId=${userIdInput.value}`
             const res = await fetch(url, {
                     method: 'GET',
                 })
                 // const data = await res.json();
-            console.log(await res.text())
+            const result = document.getElementById("result");
+            result.innerText = JSON.stringify(await res.json());
         }
 
         async function getReserveProcess() {
+            const schoolSelect = document.getElementById("schoolSelect");
+            if (schoolSelect.value == "") {
+                return;
+            }
             const groupInput = document.getElementById("groupInput");
             const url = `https://reserve-process-checker.vercel.app/getReserveProcess?groupNo=${groupInput.value}`
             const res = await fetch(url, {
                 method: 'GET',
             })
-            const data = await res.json()
-            console.log(data)
+            result.innerText = JSON.stringify(await res.json());
         }
     </script>
 </body>
