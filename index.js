@@ -1,9 +1,6 @@
 import express, { json } from 'express'; //載入express框架模組
 import home from "./public/home.js";
-// import cors from 'cors';
-// app.use(cors({
-//     origin: '*',
-// }));
+
 
 let app = express();
 
@@ -14,6 +11,7 @@ app.use(express.json());
 app.use("/home", home);
 
 app.get("/getUserRank", async(req, res, next) => {
+    console.log(req.query)
     return res.status(200).json({
         title: "Express Testing",
         message: "The app is working properly!",
