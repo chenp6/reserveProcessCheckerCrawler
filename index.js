@@ -1,5 +1,5 @@
 import express, { json } from 'express'; //載入express框架模組
-import home from "./src/home.js";
+import home from "./public/home.js";
 
 
 let app = express();
