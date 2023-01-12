@@ -1,8 +1,5 @@
 import express, { json } from 'express'; //載入express框架模組
-import * as NCKU from './public/NCKUReserveProcess.js';
-import * as NYCU from './public/NYCUReserveProcess.js';
-import schedule from 'node-schedule';
-import cors from 'cors';
+import home from "./src/home.js";
 
 
 let app = express();
@@ -11,14 +8,14 @@ let app = express();
 app.use(express.json());
 
 // Routes
-// app.use(express.static('public'))
-app.get("/getUserRank", async(req, res) => {
+app.use("/home", home);
+
+app.get("/testing", async(req, res, next) => {
     return res.status(200).json({
         title: "Express Testing",
         message: "The app is working properly!",
     });
 });
-
 // connection
 const port = process.env.PORT || 9001;
 app.listen(port, () => console.log(`Listening to port ${port}`));
