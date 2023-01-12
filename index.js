@@ -10,7 +10,14 @@ app.use(express.json());
 // Routes
 app.use("/home", home);
 
-app.get("/testing", async(req, res, next) => {
+app.get("/getUserRank", async(req, res, next) => {
+    return res.status(200).json({
+        title: "Express Testing",
+        message: "The app is working properly!",
+    });
+});
+
+app.get("/getUserRank", async(req, res, next) => {
     return res.status(200).json({
         title: "Express Testing",
         message: "The app is working properly!",
