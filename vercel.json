@@ -10,16 +10,12 @@
         }
     ],
     "routes": [{
-            "src": "/api/(.*)",
-            "dest": "public/"
+            "src": "/(.*)",
+            "dest": "/"
         },
         {
-            "src": "/",
+            "src": "/homepage/",
             "dest": "public/index.html"
-        },
-        {
-            "src": "/(.+)",
-            "dest": "public/$1"
         }
     ]
 }
