@@ -1,7 +1,7 @@
 import express, { json } from 'express'; //載入express框架模組
 import cors from 'cors';
 import home from "./src/home.js";
-import * as homepage from './src/index.html';
+import * as homepage from './index.html';
 
 
 let app = express();
