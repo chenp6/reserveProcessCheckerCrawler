@@ -9,10 +9,7 @@
             "use": "@vercel/static"
         }
     ],
-    "routes": [{
-            "src": "/src/(.*)",
-            "dest": "index.js"
-        },
+    "routes": [
         {
             "src": "/",
             "dest": "public/index.html"
