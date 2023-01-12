@@ -12,7 +12,7 @@ app.use(express.json());
 // Routes
 app.get("/home",(req,res)=>{
     let str = "index.html";  //引號內放入要切換的html檔案頁面
-    res.sendFile(str,{root:'.'});// {root:'裡面html資料的資料夾相對位址'}
+    res.sendFile(homepage,{root:'.'});// {root:'裡面html資料的資料夾相對位址'}
 });
 
 app.get("/", async(req, res, next) => {
