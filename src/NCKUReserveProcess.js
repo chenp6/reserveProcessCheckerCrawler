@@ -8,7 +8,7 @@ import fetch from 'node-fetch';
 const NCKURegisterInfo = {
     exam: new Map([
         ["1", { type: "碩士班甄試" }],
-        ["2", { type: "博士班甄試" }]
+        ["O", { type: "博士班甄試" }]
     ]),
     group: new Map()
 };
@@ -41,7 +41,7 @@ async function setGroupMap() {
 
         if (resultArr[i].includes("A1['1']")) {
             examNo = 1;
-        } else if (resultArr[i].includes("A1['2']")) {
+        } else if (resultArr[i].includes("A1['O']")) {
             examNo = 2;
         } else {
             break;
@@ -127,7 +127,7 @@ export async function updateGroupsInfo() {
 
     function updateReserveProcess(rank, status) {
         if (rank.includes("正取")) { //正取
-            return "等待正取報到/放棄中";
+            return "(っ °Д °;)っ目前尚未有備取名額";
         } else if (status.includes("備取")) { //備取且還未備取到
             return null;
         } else { //備取且空白(待報到)，已報到，放棄...等

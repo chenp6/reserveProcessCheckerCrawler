@@ -2,7 +2,7 @@ import cheerio from 'cheerio';
 import FormData from 'form-data';
 import fetch from 'node-fetch';
 import { Headers } from 'node-fetch';
-import {parseCookiesStr} from './utils.js';
+import {parseCookiesStr} from '../public/utils.js';
 /*
 const NYCURegisterInfo = {
     group: [1_3300] => {
@@ -174,7 +174,7 @@ export async function updateGroupsInfo() {
 
     function updateReserveProcess(rankType,rankNo, status) {
         if (rankType == "正取") { //正取
-            return "等待正取報到/放棄中";
+            return "(っ °Д °;)っ目前尚未有備取名額";
         } else if (status.includes("尚未遞補")) { //備取且還未備取到
             return null;
         } else { //備取且空白(待報到)，已報到，放棄...等
