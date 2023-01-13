@@ -25,13 +25,20 @@ app.listen(3000, () => {
 
 
 app.get("/testing", (req, res) => {
-    console.log(initStatus)
+    initStatus = 1;
     return res.status(200).json({
         title: "Express Testing",
         message: "The app is working properly!",
     });
 });
 
+app.get("/testing2", (req, res) => {
+    console.log(initStatus)
+    return res.status(200).json({
+        title: "Express Testing",
+        message: "The app is working properly!",
+    });
+});
 
 app.get("/getUserRank", async(req, res) => {
     const schoolId = req.query.schoolId;
