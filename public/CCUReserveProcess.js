@@ -2,7 +2,7 @@ import cheerio from 'cheerio';
 import FormData from 'form-data';
 import fetch from 'node-fetch';
 import { Headers } from 'node-fetch';
-import {parseCookiesStr} from '../public/utils.js';
+import {parseCookiesStr} from './utils.js';
 /*
 const NYCURegisterInfo = {
     group: [1_3300] => {
