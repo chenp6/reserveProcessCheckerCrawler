@@ -4,18 +4,16 @@ import * as NCKU from './public/NCKUReserveProcess.js';
 import cors from 'cors';
 import schedule from 'node-schedule';
 let app = express();
+let initStatus = 0;
 app.use(cors({
     origin: '*',
 }));
 //Reference:https://mealiy62307.medium.com/node-js-node-js-%E7%88%AC%E8%9F%B2%E8%88%87-line-bot-b94356fcd59d
 async function init() {
-    setInterval(() => {
-        console.log("testing")
-    }, 1000)
-
     console.log(new Date() + "開始初始化各校科系資料")
     await NCKU.init();
     // await NYCU.init();
+    initStatus = 1;
     console.log(new Date() + "完成初始化!")
 }
 
@@ -27,7 +25,7 @@ app.listen(3000, () => {
 
 
 app.get("/testing", (req, res) => {
-    console.log("test")
+    console.log(initStatus)
     return res.status(200).json({
         title: "Express Testing",
         message: "The app is working properly!",
