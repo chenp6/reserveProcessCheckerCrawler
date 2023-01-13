@@ -1,9 +1,12 @@
 import express, { json } from 'express'; //載入express框架模組
 import * as NCKU from './src/NCKUReserveProcess.js';
 import * as NYCU from './src/NYCUReserveProcess.js';
+import cors from 'cors';
 import schedule from 'node-schedule';
 let app = express();
-
+app.use(cors({
+    origin: '*',
+}));
 //Reference:https://mealiy62307.medium.com/node-js-node-js-%E7%88%AC%E8%9F%B2%E8%88%87-line-bot-b94356fcd59d
 async function init() {
     console.log(new Date() + "開始初始化各校科系資料")
