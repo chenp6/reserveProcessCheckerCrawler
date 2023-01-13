@@ -23,6 +23,7 @@ app.listen(3000, () => {
 
 
 app.get("/testing", (req, res) => {
+    console.log("test")
     return res.status(200).json({
         title: "Express Testing",
         message: "The app is working properly!",
