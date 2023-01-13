@@ -48,7 +48,7 @@
 
             const groupInput = document.getElementById("groupInput");
             const userIdInput = document.getElementById("userIdInput");
-            const url = `https://reserve-process-checker.vercel.app/getUserRank?schoolId=${schoolSelect.value}&groupNo=${groupInput.value}&userId=${userIdInput.value}`
+            const url = `https://reserve-process-checker.vercel.app/userRank?schoolId=${schoolSelect.value}&groupNo=${groupInput.value}&userId=${userIdInput.value}`
             const res = await fetch(url, {
                     method: 'GET',
                 })
@@ -63,7 +63,7 @@
                 return;
             }
             const groupInput = document.getElementById("groupInput");
-            const url = `https://reserve-process-checker.vercel.app/getReserveProcess?schoolId=${schoolSelect.value}&groupNo=${groupInput.value}`
+            const url = `https://reserve-process-checker.vercel.app/reserveProcess?schoolId=${schoolSelect.value}&groupNo=${groupInput.value}`
             const res = await fetch(url, {
                 method: 'GET',
             })

@@ -30,15 +30,8 @@ app.get("/initStatus", async(req, res) => {
     });
 });
 
-app.get("/testing2", (req, res) => {
-    console.log(initStatus)
-    return res.status(200).json({
-        title: "Express Testing",
-        message: "The app is working properly!",
-    });
-});
 
-app.get("/getUserRank", async(req, res) => {
+app.get("/userRank", async(req, res) => {
     const schoolId = req.query.schoolId;
     const userId = req.query.userId;
     const groupNo = req.query.groupNo;
@@ -61,7 +54,7 @@ app.get("/getUserRank", async(req, res) => {
     return;
 });
 
-app.get("/getReserveProcess", async(req, res) => {
+app.get("/reserveProcess", async(req, res) => {
     const groupNo = req.query.groupNo;
     const schoolId = req.query.schoolId;
     let process;

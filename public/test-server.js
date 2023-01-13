@@ -6,13 +6,16 @@ import fetch from 'node-fetch';
 
 
 const NCKURegisterInfo = {
-    exam: new Map([["1",{type:"碩士班甄試"}],["O",{type:"博士班甄試"}]]),
+    exam: new Map([
+        ["1", { type: "碩士班甄試" }],
+        ["O", { type: "博士班甄試" }]
+    ]),
     group: new Map()
 };
 
 
 export async function init() {
-    console.log("=== NKCU loading ===")
+    console.log("=== NCKU loading ===")
     await setGroupMap();
     await updateGroupsInfo()
     const process = getReserveProcess("O_370");
@@ -31,7 +34,7 @@ async function setGroupMap() {
     const resultArr = resultJS.split('\n');
     let examNo;
     for (let i = 2; i < resultArr.length; i++) {
-        if (! resultArr[i].includes("new Option(")) {
+        if (!resultArr[i].includes("new Option(")) {
             continue;
         }
 
@@ -107,7 +110,7 @@ export async function updateGroupsInfo() {
             }
 
             const info = {
-                index:index,
+                index: index,
                 rank: rank,
                 status: status
             }
@@ -137,7 +140,7 @@ export async function updateGroupsInfo() {
 
 
 export function getUserRank(groupNo, userExamId) {
-    const table = NCKURegisterInfo.group.get(groupNo)?.table;
+    const table = NCKURegisterInfo.group.get(groupNo) ? .table;
     if (table == undefined) {
         return null;
     } else {
