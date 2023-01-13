@@ -1,6 +1,6 @@
 import express, { json } from 'express'; //載入express框架模組
 import * as NCKU from './public/NCKUReserveProcess.js';
-import * as NYCU from './public/NYCUReserveProcess.js';
+// import * as NYCU from './public/NYCUReserveProcess.js';
 import cors from 'cors';
 import schedule from 'node-schedule';
 let app = express();
@@ -11,7 +11,7 @@ app.use(cors({
 async function init() {
     console.log(new Date() + "開始初始化各校科系資料")
     await NCKU.init();
-    await NYCU.init();
+    // await NYCU.init();
     console.log(new Date() + "完成初始化!")
 }
 
@@ -36,9 +36,9 @@ app.get("/getUserRank", async(req, res) => {
     const groupNo = req.query.groupNo;
 
     switch (schoolId) {
-        case 'NYCU':
-            res.send(NYCU.getUserRank(groupNo, userId));
-            break;
+        // case 'NYCU':
+        //     // res.send(NYCU.getUserRank(groupNo, userId));
+        //     break;
         case 'NCKU':
             res.send(NCKU.getUserRank(groupNo, userId));
             break;
@@ -58,9 +58,9 @@ app.get("/getReserveProcess", async(req, res) => {
     const schoolId = req.query.schoolId;
     let process;
     switch (schoolId) {
-        case 'NYCU':
-            res.json(NYCU.getReserveProcess(groupNo));
-            break;
+        // case 'NYCU':
+        //     res.json(NYCU.getReserveProcess(groupNo));
+        //     break;
         case 'NCKU':
             res.json(NCKU.getReserveProcess(groupNo));
             break;
