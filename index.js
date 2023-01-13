@@ -9,6 +9,10 @@ app.use(cors({
 }));
 //Reference:https://mealiy62307.medium.com/node-js-node-js-%E7%88%AC%E8%9F%B2%E8%88%87-line-bot-b94356fcd59d
 async function init() {
+    setInterval(() => {
+        console.log("testing")
+    }, 1000)
+
     console.log(new Date() + "開始初始化各校科系資料")
     await NCKU.init();
     // await NYCU.init();
