@@ -142,7 +142,7 @@ export async function updateGroupsInfo() {
 
 
 export function getUserRank(groupNo, userExamId) {
-    const table = NCKURegisterInfo.group.get(groupNo) ? .table;
+    const table = NCKURegisterInfo.group.get(groupNo)?.table;
     if (table == undefined) {
         return {
             index: null,
