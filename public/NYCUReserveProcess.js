@@ -241,15 +241,15 @@ function getIndexofItemStart(str) {
 }
 
 export function getUserRank(groupNo, userExamId) {
-    const table = NYCURegisterInfo.group.get(groupNo)?.table;
-    if (table == undefined) {
+    const rank = NYCURegisterInfo.group.get(groupNo)?.table?.get(userExamId);
+    if (rank == undefined) {
         return {
             index: null,
             rank: null,
             status: null
         };
     } else {
-        return table.get(userExamId);
+        return rank;
     }
 }
 

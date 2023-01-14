@@ -20,9 +20,15 @@ async function init() {
     initFinished = 1;
 }
 
-init();
 app.listen(3000 || process.env.PORT);
 
+app.post("/startToInit", async(req, res) => {
+    await init();
+
+    return res.status(200).json({
+        "init finished": initFinished
+    });
+});
 
 app.get("/initStatus", async(req, res) => {
     return res.status(200).json({

@@ -142,15 +142,15 @@ export async function updateGroupsInfo() {
 
 
 export function getUserRank(groupNo, userExamId) {
-    const table = NCKURegisterInfo.group.get(groupNo)?.table;
-    if (table == undefined) {
+    const rank = NCKURegisterInfo.group.get(groupNo)?.table?.get(userExamId);
+    if (rank == undefined) {
         return {
             index: null,
             rank: null,
             status: null
         };
     } else {
-        return table.get(userExamId);
+        return rank;
     }
 }
 

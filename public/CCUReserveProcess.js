@@ -189,11 +189,15 @@ export async function updateGroupsInfo() {
 
 
 export function getUserRank(groupNo, userExamId) {
-    const table = CCURegisterInfo.group.get(groupNo)?.table;
-    if (table == undefined) {
-        return null;
+    const rank = CCURegisterInfo.group.get(groupNo)?.table?.get(userExamId);
+    if (rank == undefined) {
+        return {
+            index: null,
+            rank: null,
+            status: null
+        };
     } else {
-        return table.get(userExamId);
+        return rank;
     }
 }
 
