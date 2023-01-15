@@ -40,11 +40,11 @@ async function setGroupMap() {
         }
 
         if (resultArr[i].includes("A1['1']")) {
-            examNo = 1;
+            examNo = '1';
         } else if (resultArr[i].includes("A1['O']")) {
-            examNo = 2;
+            examNo = 'O';
         } else {
-            break;
+            continue;
         }
 
         //ex: str =>[電資學院]智慧資訊安全碩士學位學程[140]
