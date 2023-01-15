@@ -77,3 +77,12 @@ app.get("/reserveProcess", async(req, res) => {
     }
     return
 });
+
+
+setInterval(async() => {
+    const url = 'https://reserve-process-checker.vercel.app/initStatus'
+    const res = await fetch(url, {
+        method: 'GET'
+    })
+    console.log(res.json())
+}, 5000)
