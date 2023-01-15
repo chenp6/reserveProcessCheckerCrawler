@@ -1,4 +1,5 @@
 import express, { json } from 'express'; //載入express框架模組
+import fetch from 'node-fetch';
 import * as NCKU from './public/NCKUReserveProcess.js';
 // import * as NYCU from './public/NYCUReserveProcess.js';
 import cors from 'cors';
@@ -17,14 +18,14 @@ async function init() {
     await NCKU.init();
     console.log(new Date() + "完成初始化!")
 }
-app.listen(3000 || process.env.PORT);
+const server = app.listen(3000 || process.env.PORT);
 
-// app.post("/startToInit", async(req, res, next) => {
-
-//     return res.status(200).json({
-//         "init finished": initFinished
-//     });
-// });
+app.post("/stopServer", async(req, res, next) => {
+    server.close();
+    return res.status(200).json({
+        "init finished": "the server is closed"
+    });
+});
 
 app.get("/initStatus", async(req, res) => {
     return res.status(200).json({
