@@ -1,7 +1,7 @@
 import cheerio from 'cheerio';
 import FormData from 'form-data';
 import fetch from 'node-fetch';
-
+let initStatus = 0;
 //Reference:https://mealiy62307.medium.com/node-js-node-js-%E7%88%AC%E8%9F%B2%E8%88%87-line-bot-b94356fcd59d
 
 
@@ -122,6 +122,7 @@ export async function updateGroupsInfo() {
         groupInfo.table = rankTable;
         groupInfo.registered = registered;
         groupInfo.want = want;
+        initStatus++;
     }
 
 
@@ -172,4 +173,8 @@ export function getReserveProcess(groupNo) {
 
     }
 
+}
+
+export function getInitStatus(){
+    return initStatus;
 }
