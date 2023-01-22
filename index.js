@@ -22,12 +22,11 @@ async function run() {
     // Establish and verify connection
     const db = client.db("reserveProcess");
     await db.command({ ping: 1 });
-    console.log("Connected successfully to server");
 
 
-    examTable = await db.collection("exam", { tls: true });
-    groupTable = await db.collection("group", { tls: true });
-    processTable = await db.collection("process", { tls: true });
+    examTable = db.collection("exam", { tls: true });
+    groupTable = db.collection("group", { tls: true });
+    processTable = db.collection("process", { tls: true });
     test = "ok";
     console.log(new Date() + "資料庫資料完成連接")
 }
