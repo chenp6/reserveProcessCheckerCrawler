@@ -1,8 +1,42 @@
 import cheerio from 'cheerio';
 import fetch from 'node-fetch';
 import https from 'https';
-import { newPage, NYCUPageManager,navigateToPage } from './PageManager.js';
+import { newPage, NYCUPageManager, navigateToPage } from './PageManager.js';
+import { updateTable } from './Utils.js';
 //Example 
+/*
+【group table】
+idField => {
+    school:"NYCU",
+    examNo:<examNo>
+    groupNo:<groupNo>
+}
+content =>
+{
+    name: groupName,
+    currentReserve: "",
+    registered: 0,
+    want: 0
+}
+*/
+/*
+【process table】
+
+idField => 
+{
+    groupId:<groupId>,
+    userId:<userId>
+}
+ *content =>
+ * {
+ *      index:<index>,
+ *      rank:<rank>,
+ *      status:<status>
+ * }
+ */
+
+
+
 /*
 const NYCURegisterInfo = {
     exam: [112] => {
@@ -16,13 +50,6 @@ const NYCURegisterInfo = {
     group: [112A_0300] => {
         name: "生化暨分子生物研究所"
         code: "a8dde90f-689e-49c0-9f14-42996d6a6881",
-        table:
-        "xxxxxx(考生編號)"=>{
-
-        },
-        reserveProcess:'',
-        want:16,
-        registered:10
     }
 
 };
@@ -36,27 +63,15 @@ const pageManager = new NYCUPageManager(page);
 
 
 export async function init() {
-    // const browser = await puppeteer.launch({ headless: false }); // 啟動瀏覽器，headless 設定為 false 可以看到瀏覽器運作的情況，true 為無頭瀏覽器
-    // const page = await browser.newPage();
-    // page = startNewPage(page);
+
     console.log("=== NYCU loading ===")
-
-    await navigateToPage(page,'https://enroll.nycu.edu.tw/');
+    await navigateToPage(page, 'https://enroll.nycu.edu.tw/');
     await setGroupMap();
-    // console.log(NYCUDepartmentInfo.group.get("112_A41"))
-    // console.log(NYCUDepartmentInfo.group.get("112A_A41"))
-    // console.log(NYCUDepartmentInfo.group.get("112E_A41"))
-
     await updateGroupsInfo();
-    // const group1 = NYCUDepartmentInfo.group.get("112_A41");
-    // const group2 = NYCUDepartmentInfo.group.get("112_A42");
-    // const group3 = NYCUDepartmentInfo.group.get("112_A43")
-    // console.log(group1.registered + "/" + group1.want + "=>備取進度:" + group1.reserveProcess)
-    // console.log(group2.registered + "/" + group2.want + "=>備取進度:" + group2.reserveProcess)
-    // console.log(group3.registered + "/" + group3.want + "=>備取進度:" + group3.reserveProcess)
     console.log("=== NYCU done ===")
 
 }
+
 
 async function setGroupMap() {
     const httpsAgent = new https.Agent({
@@ -104,11 +119,7 @@ async function setGroupMap() {
                 const groupName = groupInfo.substring(groupNameStartAt);
                 NYCURegisterInfo.group.set(groupNo, {
                     name: groupName,
-                    code: groupCode,
-                    table: [],
-                    reserveProcess: "",
-                    registered: 0,
-                    want: 0
+                    code: groupCode
                 });
             }
 
@@ -116,7 +127,7 @@ async function setGroupMap() {
     }
 }
 
-export async function updateGroupsInfo() {
+async function updateGroupsInfo() {
     for (const [groupNo, groupInfo] of NYCURegisterInfo.group) {
         const examNo = groupNo.split('_')[0];
 
@@ -128,7 +139,6 @@ export async function updateGroupsInfo() {
         const content = await page.content(); // 取得新頁面的內容
         const $ = cheerio.load(content);
 
-        const rankTable = new Map();
         let reserveCounter = 1;
         const rowCount = $("#dgUserList tr").length;
         const cellCount = $("#dgUserList tr td").length;
@@ -154,13 +164,13 @@ export async function updateGroupsInfo() {
 
         let registered = 0;
         let want = 0;
-
-        $("table > tbody > tr").each((index, element) => {
+        let currentReserve = "";
+        $("table > tbody > tr").each(async(index, element) => {
             if (index == 0) {
                 return;
             }
             //td:eq(0)是抓取第一欄的文字 => 考生編號
-            const id = $(element).find(`td:eq(${idColNo})`).text().trim();
+            const userId = $(element).find(`td:eq(${idColNo})`).text().trim();
 
             //td:eq(1)是抓取第二欄的文字 => 正備取
             let rank = $(element).find(`td:eq(${rankColNo})`).text().trim();
@@ -180,24 +190,59 @@ export async function updateGroupsInfo() {
                 registered++;
             }
 
-            const reserveProcess = updateReserveProcess(rank, status);
-            if (reserveProcess != null) {
-                groupInfo.reserveProcess = reserveProcess;
+            const process = updateReserveProcess(rank, status);
+            if (process != null) {
+                currentReserve = process;
             }
 
-
-            const info = {
+            /*
+            idField => 
+            {
+                groupId:<groupId>,
+                userId:<userId>
+            }
+             *content =>
+             * {
+             *      index:<index>,
+             *      rank:<rank>,
+             *      status:<status>
+             * }
+             */
+            await updateTable("process", {
+                groupId: "NYCU_" + groupNo,
+                userId: userId
+            }, {
                 index: index,
                 rank: rank,
                 status: status
-            };
-            rankTable.set(id, info);
+            });
 
-
-        })
-        groupInfo.table = rankTable;
-        groupInfo.registered = registered;
-        groupInfo.want = want;
+        });
+        /*
+            idField => {
+                school:"NYCU",
+                examNo:<examNo>
+                groupNo:<groupNo>
+            }
+            content =>
+            {
+                name: groupName,
+                currentReserve: "",
+                registered: 0,
+                want: 0
+            }
+        */
+        const queries = groupNo.split('_');
+        await updateTable("group", {
+            school: "NYCU",
+            examNo: queries[0],
+            groupNo: queries[1]
+        }, {
+            name: groupInfo.name,
+            currentReserve: currentReserve,
+            registered: registered,
+            want: want
+        });
     }
 
     /**
@@ -238,38 +283,4 @@ function getIndexofItemStart(str) {
         }
     }
     return itemStartAt;
-}
-
-export function getUserRank(groupNo, userExamId) {
-    const rank = NYCURegisterInfo.group.get(groupNo)?.table?.get(userExamId);
-    if (rank == undefined) {
-        return {
-            index: null,
-            rank: null,
-            status: null
-        };
-    } else {
-        return rank;
-    }
-}
-
-export function getReserveProcess(groupNo) {
-    const info = NYCURegisterInfo.group?.get(groupNo);
-    if (info == undefined) {
-        return {
-            registered: null,
-            want: null,
-            reserveProcess: null
-        };
-    } else {
-
-        return {
-            registered: info.registered,
-            want: info.want,
-            reserveProcess: info.reserveProcess
-        }
-
-    }
-
-
 }

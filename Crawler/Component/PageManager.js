@@ -1,5 +1,6 @@
 import puppeteer, { TimeoutError } from 'puppeteer';
-
+// import chromium from "chrome-aws-lambda";
+// import playwright from "playwright-core";
 export async function newPage(headless) {
     const browser = await puppeteer.launch({ headless: headless }); // 啟動瀏覽器，headless 設定為 false 可以看到瀏覽器運作的情況，true 為無頭瀏覽器
     const page = await browser.newPage();

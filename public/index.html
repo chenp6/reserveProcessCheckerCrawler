@@ -23,51 +23,107 @@
             國立中正大學
         </option>
     </select>
-
-    <label for="groupInput">group input:</label>
-    <input type="text" id="groupInput" value="" name="groupNo">
+    <select id="examSelect">
+    </select>
+    <select id="groupSelect">
+    </select>
     <br>
-    <label for="userIdInput">user id:</label>
+    <label for="userIdInput">考生編號/准考證號碼:</label>
     <input type="text" id="userIdInput" value="" name="userId">
     <br>
     <button onclick="getUserRank()">get user rank</button>
     <button onclick="getReserveProcess()">get reserve process</button>
     <div id="result"></div>
     <script>
+        let groupInfo = new Map();
+
+
         reset();
 
         function reset() {
             document.getElementById("schoolSelect").selectedIndex = 0;
+            document.getElementById("examSelect").selectedIndex = 0;
+            document.getElementById("groupSelect").selectedIndex = 0;
+            document.getElementById("userIdInput").value = "";
         }
 
-        async function getUserRank() {
-            const schoolSelect = document.getElementById("schoolSelect");
-            if (schoolSelect.value == "") {
+        document.getElementById("schoolSelect").onchange = async(e) => {
+            const selectedSchool = document.getElementById("schoolSelect").value;
+
+            if (selectedSchool == "") {
                 return;
             }
-
-            const groupInput = document.getElementById("groupInput");
-            const userIdInput = document.getElementById("userIdInput");
-            const url = `https://reserve-process-checker.vercel.app/userRank?schoolId=${schoolSelect.value}&groupNo=${groupInput.value}&userId=${userIdInput.value}`
-            const res = await fetch(url, {
-                    method: 'GET',
-                })
-                // const data = await res.json();
-            const result = document.getElementById("result");
-            result.innerText = JSON.stringify(await res.json());
-        }
-
-        async function getReserveProcess() {
-            const schoolSelect = document.getElementById("schoolSelect");
-            if (schoolSelect.value == "") {
-                return;
-            }
-            const groupInput = document.getElementById("groupInput");
-            const url = `https://reserve-process-checker.vercel.app/reserveProcess?schoolId=${schoolSelect.value}&groupNo=${groupInput.value}`
+            const url = `https://reserve-process-checker.vercel.app/getExamSelect?school=${selectedSchool}`;
             const res = await fetch(url, {
                 method: 'GET',
             })
-            result.innerText = JSON.stringify(await res.json());
+            const examList = await res.json()
+            let html = " <option value = '' > 請選擇考試類別 </option>"
+
+            for (const exam of examList) {
+                html += `<option value = ${exam.examNo} >  ${exam.name}</option>`
+            }
+            document.getElementById("examSelect").innerHTML = html;
+        }
+
+
+
+
+        document.getElementById("examSelect").onchange = async(e) => {
+            groupInfo = new Map();
+            const selectedSchool = document.getElementById("schoolSelect").value;
+            const selectedExam = document.getElementById("examSelect").value;
+            if (selectedSchool == "" || selectedExam == "") {
+                return;
+            }
+
+            const url = `https://reserve-process-checker.vercel.app/getGroupSelect?school=${selectedSchool}&examNo=${selectedExam}`;
+            const res = await fetch(url, {
+                method: 'GET',
+            })
+            const groupList = await res.json()
+            let html = " <option value = '' > 請選擇系組 </option>"
+
+            for (const group of groupList) {
+                html += `<option value = ${group.groupNo} >  ${group.name}</option>`
+                groupInfo.set(group.groupNo, `${group.registered}/${group.want}=>備取進度:${group.currentReserve}`);
+            }
+            document.getElementById("groupSelect").innerHTML = html;
+
+        }
+
+
+
+        async function getUserRank() {
+            const selectedSchool = document.getElementById("schoolSelect").value;
+            const selectedExam = document.getElementById("examSelect").value;
+            const selectedGroup = document.getElementById("groupSelect").value;
+            const userId = document.getElementById("userIdInput").value;
+            if (selectedSchool == "" || selectedExam == "" || selectedGroup == "" || userId == "") {
+                return;
+            }
+
+            const groupId = selectedSchool + "_" + selectedExam + "_" + selectedGroup;
+
+            const url = `https://reserve-process-checker.vercel.app/getUserRank?groupId=${groupId}&userId=${userId}`;
+            const res = await fetch(url, {
+                method: 'GET',
+            })
+            const result = document.getElementById("result");
+            const userRank = await res.json();
+            result.innerText = `名次:${userRank.rank} , 報到狀況:${userRank.status}`;
+        }
+
+        async function getReserveProcess() {
+            const selectedSchool = document.getElementById("schoolSelect").value;
+            const selectedExam = document.getElementById("examSelect").value;
+            const selectedGroup = document.getElementById("groupSelect").value;
+
+            if (selectedSchool == "" || selectedExam == "" || selectedGroup == "") {
+                return;
+            }
+            const groupInput = document.getElementById("groupInput");
+            result.innerText = groupInfo.get(selectedGroup);
         }
     </script>
 </body>
