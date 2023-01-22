@@ -10,7 +10,7 @@ let examTable;
 let groupTable;
 let processTable;
 const uri =
-    `mongodb+srv://${process.env.GUEST_USER}:${process.env.GUEST_PWD}@cluster0.lkdsifs.mongodb.net/?retryWrites=true&w=majority`;
+    `mongodb+srv://guest:guest@cluster0.lkdsifs.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a new MongoClient
 const client = new MongoClient(uri);
