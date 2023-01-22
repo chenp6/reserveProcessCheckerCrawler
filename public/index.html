@@ -64,6 +64,8 @@
                 html += `<option value = ${exam.examNo} >  ${exam.name}</option>`
             }
             document.getElementById("examSelect").innerHTML = html;
+            document.getElementById("groupSelect").innerHTML = "";
+            document.getElementById("userIdInput").value = "";
         }
 
 
@@ -89,6 +91,7 @@
                 groupInfo.set(group.groupNo, `${group.registered}/${group.want}=>備取進度:${group.currentReserve}`);
             }
             document.getElementById("groupSelect").innerHTML = html;
+            document.getElementById("userIdInput").value = "";
 
         }
 
