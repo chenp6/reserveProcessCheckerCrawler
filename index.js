@@ -10,7 +10,7 @@ let examTable;
 let groupTable;
 let processTable;
 const uri =
-    `mongodb+srv://guest:guest@cluster0.lkdsifs.mongodb.net/?retryWrites=true&w=majority`;
+    `mongodb+srv://${process.env.GUEST_USER}:${process.env.GUEST_PWD}@cluster0.lkdsifs.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a new MongoClient
 const client = new MongoClient(uri);
@@ -24,9 +24,9 @@ async function run() {
     await db.command({ ping: 1 });
 
 
-    examTable = db.collection("exam", { tls: true });
-    groupTable = db.collection("group", { tls: true });
-    processTable = db.collection("process", { tls: true });
+    examTable = await db.collection("exam", { tls: true });
+    groupTable = await db.collection("group", { tls: true });
+    processTable = await db.collection("process", { tls: true });
     test = "ok";
     console.log(new Date() + "資料庫資料完成連接")
 }
