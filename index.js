@@ -4,7 +4,7 @@ import cors from 'cors';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-
+let test = 0;
 
 let examTable;
 let groupTable;
@@ -28,6 +28,7 @@ async function run() {
     examTable = await db.collection("exam", { tls: true });
     groupTable = await db.collection("group", { tls: true });
     processTable = await db.collection("process", { tls: true });
+    test = "ok";
     console.log(new Date() + "資料庫資料完成連接")
 }
 run().catch(console.dir);
@@ -57,4 +58,9 @@ app.get("/getGroupSelect", async(req, res) => {
 app.get("/getUserRank", async(req, res) => {
     //user rank
     return res.status(200).json(await processTable.findOne({ groupId: req.query.groupId, userId: req.query.userId }));
+});
+
+app.get("/getStatus", async(req, res) => {
+    //user rank
+    return res.status(200).json({ status: test })
 });

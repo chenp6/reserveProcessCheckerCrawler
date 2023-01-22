@@ -26,10 +26,8 @@
         "start": "node index.js",
         "test-server": "node public/test-server.js",
         "test": "jest --coverage",
-        "CCU-server": "node public/CCUReserveProcess.js",
-        "NYCU-server": "node public/NYCUReserveProcess.js",
-        "NCKU-server": "node public/NCKUReserveProcess.js",
-        "localServer": "node public/server.js"
+        "localServer": "node index_local.js",
+        "APItest": "node APItest.js"
     },
     "name": "registercheckbot",
     "version": "1.0.0",
