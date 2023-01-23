@@ -16,6 +16,8 @@ const uri =
 const client = new MongoClient(uri);
 
 async function run() {
+    connectStatus = "running";
+
     // Connect the client to the server (optional starting in v4.7)
     await client.connect();
 
@@ -45,33 +47,21 @@ app.listen(3000 || process.env.PORT, () => {
 });
 
 app.get("/getExamSelect", async(req, res) => {
-    if (connectStatus !== "ok") {
-        run().catch(console.dir);
-    }
     const examList = await examTable.find({ school: req.query.school }).toArray();
     return res.status(200).json(examList);
 });
 
 app.get("/getGroupSelect", async(req, res) => {
-    if (connectStatus !== "ok") {
-        run().catch(console.dir);
-    }
     //group list
     return res.status(200).json(await groupTable.find({ school: req.query.school, examNo: '' + req.query.examNo }).toArray());
 });
 
 app.get("/getUserRank", async(req, res) => {
-    if (connectStatus !== "ok") {
-        run().catch(console.dir);
-    }
     //user rank
     return res.status(200).json(await processTable.findOne({ groupId: req.query.groupId, userId: req.query.userId }));
 });
 
 app.get("/getStatus", async(req, res) => {
-    if (connectStatus !== "ok") {
-        run().catch(console.dir);
-    }
     //user rank
     return res.status(200).json({ status: connectStatus })
 });
