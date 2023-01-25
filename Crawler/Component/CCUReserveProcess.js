@@ -1,5 +1,4 @@
 import cheerio from 'cheerio';
-import FormData from 'form-data';
 import fetch from 'node-fetch';
 import { Headers } from 'node-fetch';
 import { parseCookiesStr, updateTable } from './Utils.js';
@@ -64,9 +63,9 @@ export async function init() {
 }
 
 
-const examLen = 1;
+const examList = [3];
 async function setGroupMap() {
-    for (let examNo = 1; examNo <= examLen; examNo++) {
+    for (const examNo of examList) {
         const url = `https://www026198.ccu.edu.tw/academic/query_reg/query_reg_${examNo}.php`;
         const res = await fetch(url, {
             method: 'GET'

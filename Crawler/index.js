@@ -1,8 +1,8 @@
 import { MongoClient } from "mongodb";
 import { connectionMap, setConnections, updateTable, getAllObjects } from "./Component/Utils.js";
-import * as CCU from './Component/CCUReserveProcess.js'
-import * as NYCU from './Component/NYCUReserveProcess.js'
-
+import * as CCU from './Component/CCUReserveProcess.js';
+import * as NYCU from './Component/NYCUReserveProcess.js';
+import * as NCKU from './Component/NCKUReserveProcess.js';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -34,6 +34,7 @@ async function run() {
 
     await CCU.init();
     await NYCU.init();
+    await NCKU.init();
 
     // //get user rank
     // console.log(await getGroupProcess(db, "CCU", "3", "1_4000"));
@@ -44,15 +45,15 @@ async function run() {
 }
 run().catch(console.dir);
 
-async function updateExams(db) {
+async function updateExams() {
     await updateCCUExams();
     await updateNYCUExams();
-
+    await updateNCKUExams();
 
     async function updateCCUExams() {
-        await updateTable("exam", { school: "CCU", examNo: '1' }, { name: "111學年度碩士班招生考試" });
+        // await updateTable("exam", { school: "CCU", examNo: '1' }, { name: "111學年度碩士班招生考試" });
         // await updateTable("exam", { school: "CCU", examNo: '2' }, { name: "111學年度博士班招生考試" });
-        // await updateTable("exam", { school: "CCU", examNo: '3' }, { name: "112學年度碩士班甄試" });
+        await updateTable("exam", { school: "CCU", examNo: '3' }, { name: "112學年度碩士班甄試" });
         // await updateTable("exam", { school: "CCU", examNo: '4' }, { name: "111學年度數位學習碩士專班招生考試" });
         // await updateTable("exam", { school: "CCU", examNo: '5' }, { name: "111學年度碩士專班招生考試" });
     }

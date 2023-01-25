@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <select id="schoolSelect">
+        <option value="">
+            請選擇學校
+        </option>
+        <option value="NYCU">
+            國立交通大學
+        </option>
+        <option value="NCKU">
+            國立成功大學
+        </option>
+        <option value="CCU">
+            國立中正大學
+        </option>
+    </select>
+    <select id="examSelect">
+    </select>
+    <select id="groupSelect">
+    </select>
+    <br>
+    <label for="userIdInput">考生編號/准考證號碼:</label>
+    <input type="text" id="userIdInput" value="" name="userId">
+    <br>
+    <button onclick="getUserRank()">get user rank</button>
+    <button onclick="getReserveProcess()">get reserve process</button>
+    <div id="result"></div>
+    <script>
+        let groupInfo = new Map();
+
+
+        reset();
+
+        function reset() {
+            document.getElementById("schoolSelect").selectedIndex = 0;
+            document.getElementById("examSelect").selectedIndex = 0;
+            document.getElementById("groupSelect").selectedIndex = 0;
+            document.getElementById("userIdInput").value = "";
+        }
+
+        document.getElementById("schoolSelect").onchange = async(e) => {
+            const selectedSchool = document.getElementById("schoolSelect").value;
+
+            if (selectedSchool == "") {
+                return;
+            }
+            const url = `http://localhost:3000/getExamSelect?school=${selectedSchool}`;
+            const res = await fetch(url, {
+                method: 'GET',
+            })
+            const examList = await res.json()
+            let html = " <option value = '' > 請選擇考試類別 </option>"
+
+            for (const exam of examList) {
+                html += `<option value = ${exam.examNo} >  ${exam.name}</option>`
+            }
+            document.getElementById("examSelect").innerHTML = html;
+        }
+
+
+
+
+        document.getElementById("examSelect").onchange = async(e) => {
+            groupInfo = new Map();
+            const selectedSchool = document.getElementById("schoolSelect").value;
+            const selectedExam = document.getElementById("examSelect").value;
+            if (selectedSchool == "" || selectedExam == "") {
+                return;
+            }
+
+            const url = `http://localhost:3000/getGroupSelect?school=${selectedSchool}&examNo=${selectedExam}`;
+            const res = await fetch(url, {
+                method: 'GET',
+            })
+            const groupList = await res.json()
+            let html = " <option value = '' > 請選擇系組 </option>"
+
+            for (const group of groupList) {
+                html += `<option value = ${group.groupNo} >  ${group.name}</option>`
+                groupInfo.set(group.groupNo, `${group.registered}/${group.want}=>備取進度:${group.currentReserve}`);
+            }
+            document.getElementById("groupSelect").innerHTML = html;
+
+        }
+
+
+
+        async function getUserRank() {
+            const selectedSchool = document.getElementById("schoolSelect").value;
+            const selectedExam = document.getElementById("examSelect").value;
+            const selectedGroup = document.getElementById("groupSelect").value;
+            const userId = document.getElementById("userIdInput").value;
+            if (selectedSchool == "" || selectedExam == "" || selectedGroup == "" || userId == "") {
+                return;
+            }
+
+            const groupId = selectedSchool + "_" + selectedExam + "_" + selectedGroup;
+
+            const url = `http://localhost:3000/getUserRank?groupId=${groupId}&userId=${userId}`;
+            const res = await fetch(url, {
+                method: 'GET',
+            })
+            const result = document.getElementById("result");
+            const userRank = await res.json();
+            result.innerText = `名次:${userRank.rank} , 報到狀況:${userRank.status}`;
+        }
+
+        async function getReserveProcess() {
+            const selectedSchool = document.getElementById("schoolSelect").value;
+            const selectedExam = document.getElementById("examSelect").value;
+            const selectedGroup = document.getElementById("groupSelect").value;
+
+            if (selectedSchool == "" || selectedExam == "" || selectedGroup == "") {
+                return;
+            }
+            const groupInput = document.getElementById("groupInput");
+            result.innerText = groupInfo.get(selectedGroup);
+        }
+    </script>
+</body>
+
+</html>
