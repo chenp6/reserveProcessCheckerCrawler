@@ -6,10 +6,34 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-</head>
+    <link rel="stylesheet" href="./loadingHamster.css" type="text/css"> </head>
 
-<body>
-    <select id="schoolSelect">
+<body style="font-family: 'Source Code Pro', monospace;">
+    <!-- Copy by https://uiverse.io/Nawsome/wet-mayfly-23 -->
+    <div id="loadingPage" style="height:100vh; display: flex; gap:2vw; justify-content: center; align-items: center; flex-direction: column; ">
+        <div aria-label="Orange and tan hamster running in a metal wheel" role="img" class="wheel-and-hamster">
+            <div class="wheel"></div>
+            <div class="hamster">
+                <div class="hamster__body">
+                    <div class="hamster__head">
+                        <div class="hamster__ear"></div>
+                        <div class="hamster__eye"></div>
+                        <div class="hamster__nose"></div>
+                    </div>
+                    <div class="hamster__limb hamster__limb--fr"></div>
+                    <div class="hamster__limb hamster__limb--fl"></div>
+                    <div class="hamster__limb hamster__limb--br"></div>
+                    <div class="hamster__limb hamster__limb--bl"></div>
+                    <div class="hamster__tail"></div>
+                </div>
+            </div>
+            <div class="spoke"></div>
+        </div>
+        <div style="text-align:center">Please wait while the data is loading<br>Thanks for your patient!ヾ(•ω•`)o</div>
+    </div>
+    <div id="loadedPage" style="display: none;">
+
+        <select id="schoolSelect">
         <option value="">
             請選擇學校
         </option>
@@ -23,22 +47,40 @@
             國立中正大學
         </option>
     </select>
-    <select id="examSelect">
+        <select id="examSelect">
     </select>
-    <select id="groupSelect">
+        <select id="groupSelect">
     </select>
-    <br>
-    <label for="userIdInput">考生編號/准考證號碼:</label>
-    <input type="text" id="userIdInput" value="" name="userId">
-    <br>
-    <button onclick="getUserRank()">get user rank</button>
-    <button onclick="getReserveProcess()">get reserve process</button>
-    <div id="result"></div>
+        <br>
+        <label for="userIdInput">考生編號/准考證號碼:</label>
+        <input type="text" id="userIdInput" value="" name="userId">
+        <br>
+        <button onclick="getUserRank()">get user rank</button>
+        <button onclick="getReserveProcess()">get reserve process</button>
+        <div id="result"></div>
+    </div>
     <script>
         let groupInfo = new Map();
 
-
+        checkDatabaseConnection();
         reset();
+
+        function checkDatabaseConnection() {
+            let preStatus = "closed";
+            const statusGetter = setInterval(async() => {
+                const url = 'https://reserve-process-checker.vercel.app/getStatus'
+                const res = await fetch(url, {
+                    method: 'GET'
+                })
+                const status = (await res.json()).status;
+                if (preStatus != status && status == "ok") { //status:ok
+                    clearInterval(statusGetter)
+                    preStatus = status;
+                    document.getElementById('loadingPage').remove();
+                    document.getElementById('loadedPage').style.display = "block";
+                }
+            }, 500)
+        }
 
         function reset() {
             document.getElementById("schoolSelect").selectedIndex = 0;
