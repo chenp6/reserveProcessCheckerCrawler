@@ -41,7 +41,6 @@ app.use(cors({
     origin: '*',
 }));
 
-app.use('/css', express.static(__dirname + "/public/css/"));
 
 app.listen(3000 || process.env.PORT, () => {
     console.log(new Date() + "開始監聽port 3000!");
