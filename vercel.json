@@ -14,8 +14,8 @@
             "dest": "public/index.html"
         },
         {
-            "src": "/css/(.+)",
-            "dest": "public/css/(.+)"
+            "src": "/css/loadingHamster.css",
+            "dest": "public/css/loadingHamster.css"
         },
         {
             "src": "/(.+)",
