@@ -74,25 +74,36 @@ async function setGroupMap() {
         const resultHTML = await res.text();
         const $ = cheerio.load(resultHTML);
 
-
-        // |系所名稱及班別|組別名稱|報到階段|報到日期| 備註	|檔案下載|報到情形查詢|
-        // |      0      |   1   |   2   |   3    |  4  |   5   |      6    |
+        let deptName = "";
         $("table > tbody > tr").each(async(index, element) => {
+            // 系所名稱及班別之第一列組別
+            // |系所名稱及班別|組別名稱|報到階段|報到日期| 備註	|檔案下載|報到情形查詢|
+            // |      0      |   1   |   2   |   3    |  4  |   5   |      6    |
+
+            // 【預設】系所名稱及班別之第一列外組別
+            // |組別名稱|報到階段|報到日期|備註|檔案下載|報到情形查詢|
+            // |   0   |   1   |   2    | 3 |   4   |      5    |
+            let groupIdColNo = 5;
+            let groupTypeColNo = 0;
+
+            if ($(element).children().length == 7) { //是系所名稱及班別之第一列組別
+                //td:eq(0)是抓取第一欄的文字 => 系所名稱及班別
+                deptName = $(element).find(`td:eq(0)`).text().trim();
+                groupIdColNo = 6;
+                groupTypeColNo = 1;
+            }
 
             //td:eq(6)是抓取第七欄的文字 => 報到情形查詢
             //checkin_detail?d=142I999I1I5202I0 >>> 142I999I1I5202I0
-            let groupId = $(element).find(`td:eq(6)`).children().first().attr("href");
+            let groupId = $(element).find(`td:eq(${groupIdColNo})`).children().first().attr("href");
             if (groupId == undefined) {
                 return;
             } else {
                 groupId = groupId.split("=")[1];
             }
 
-            // //td:eq(0)是抓取第一欄的文字 => 系所名稱及班別
-            const deptName = $(element).find(`td:eq(0)`).text().trim();
-
-            // //td:eq(1)是抓取第二欄的文字 => 組別名稱
-            const groupType = $(element).find(`td:eq(1)`).text().trim();
+            //td:eq(1)是抓取第二欄的文字 => 組別名稱
+            const groupType = $(element).find(`td:eq(${groupTypeColNo})`).text().trim();
 
             //name:系所名稱及班別 組別名稱
             //>>> ex:地球科學學系地球物理碩士班	不分組(一般生)
@@ -215,7 +226,7 @@ async function updateGroupsInfo() {
     function updateReserveProcess(rank, status) {
         if (rank == "正取") {
             return "(っ °Д °;)っ目前尚未有備取名額";
-        } else if (status == "備取") { //備取且還未備取到
+        } else if (status == "未報到") { //備取且還未備取到
             return null;
         } else { //空白(待報到)，已報到，放棄...等
             return rank;
