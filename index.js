@@ -16,16 +16,17 @@ const uri =
 const client = new MongoClient(uri);
 
 async function run() {
-    connectStatus = "running";
+    connectStatus = "start connect";
 
     // Connect the client to the server (optional starting in v4.7)
     await client.connect();
 
+    connectStatus = "start Establish and verify connection";
     // Establish and verify connection
     const db = client.db("reserveProcess");
     await db.command({ ping: 1 });
 
-
+    connectStatus = "start table collection connection";
     examTable = await db.collection("exam", { tls: true });
     groupTable = await db.collection("group", { tls: true });
     processTable = await db.collection("process", { tls: true });
