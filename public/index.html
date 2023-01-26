@@ -68,7 +68,7 @@
         function checkDatabaseConnection() {
             let preStatus = "closed";
             const statusGetter = setInterval(async() => {
-                const url = 'https://reserve-process-checker.vercel.app/getStatus'
+                const url = './getStatus'
                 const res = await fetch(url, {
                     method: 'GET'
                 })
@@ -95,7 +95,7 @@
             if (selectedSchool == "") {
                 return;
             }
-            const url = `https://reserve-process-checker.vercel.app/getExamSelect?school=${selectedSchool}`;
+            const url = `./getExamSelect?school=${selectedSchool}`;
             const res = await fetch(url, {
                 method: 'GET',
             })
@@ -121,7 +121,7 @@
                 return;
             }
 
-            const url = `https://reserve-process-checker.vercel.app/getGroupSelect?school=${selectedSchool}&examNo=${selectedExam}`;
+            const url = `./getGroupSelect?school=${selectedSchool}&examNo=${selectedExam}`;
             const res = await fetch(url, {
                 method: 'GET',
             })
@@ -150,7 +150,7 @@
 
             const groupId = selectedSchool + "_" + selectedExam + "_" + selectedGroup;
 
-            const url = `https://reserve-process-checker.vercel.app/getUserRank?groupId=${groupId}&userId=${userId}`;
+            const url = `./getUserRank?groupId=${groupId}&userId=${userId}`;
             const res = await fetch(url, {
                 method: 'GET',
             })
