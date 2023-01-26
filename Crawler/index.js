@@ -3,12 +3,12 @@ import { connectionMap, setConnections, updateTable, getAllObjects } from "./Com
 import * as CCU from './Component/CCUReserveProcess.js';
 import * as NYCU from './Component/NYCUReserveProcess.js';
 import * as NCKU from './Component/NCKUReserveProcess.js';
+import * as NCU from './Component/NCUReserveProcess.js';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
 // Connection URI
-const uri =
-    `mongodb+srv://${process.env.OWNER_USER}:${process.env.OWNER_PWD}@cluster0.lkdsifs.mongodb.net/?retryWrites=true&w=majority`;
+const uri = process.env.MONGODB_URL;
 
 // Create a new MongoClient
 const client = new MongoClient(uri);
@@ -35,6 +35,7 @@ async function run() {
     await CCU.init();
     await NYCU.init();
     await NCKU.init();
+    await NCU.init();
 
     // //get user rank
     // console.log(await getGroupProcess(db, "CCU", "3", "1_4000"));
@@ -49,6 +50,7 @@ async function updateExams() {
     await updateCCUExams();
     await updateNYCUExams();
     await updateNCKUExams();
+    await updateNCUExams();
 
     async function updateCCUExams() {
         // await updateTable("exam", { school: "CCU", examNo: '1' }, { name: "111學年度碩士班招生考試" });
@@ -67,6 +69,10 @@ async function updateExams() {
     async function updateNCKUExams() {
         await updateTable("exam", { school: "NCKU", examNo: '1' }, { name: "碩士班甄試" });
         await updateTable("exam", { school: "NCKU", examNo: 'O' }, { name: "博士班甄試" });
+    }
+
+    async function updateNCUExams() {
+        await updateTable("exam", { school: "NCU", examNo: '142' }, { name: "112學年度碩士班、博士班甄試入學招生" });
     }
 }
 
