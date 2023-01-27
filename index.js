@@ -15,7 +15,7 @@ const uri = process.env.MONGODB_URL;
 const client = new MongoClient(uri);
 
 async function run() {
-    connectStatus = "start connect";
+    connectStatus = "start connect" + process.env.MONGODB_URL;
 
     // Connect the client to the server (optional starting in v4.7)
     await client.connect();
