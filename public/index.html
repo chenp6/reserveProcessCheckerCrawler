@@ -32,6 +32,11 @@
         <div style="text-align:center">Please wait while the data is loading<br>Thanks for your patient!ヾ(•ω•`)o</div>
     </div>
     <div id="loadedPage" style="display: none;">
+        <div>
+            (1)查詢系組備取進度:選擇學校>>選擇考試類別>>選擇系組>>按下【查詢系組備取進度】
+            <br> (2)查詢個人備取進度:選擇學校>>選擇考試類別>>選擇系組>>填入考生編號/准考證號碼>>按下【查詢個人備取進度】
+        </div>
+        <br>
         <select id="schoolSelect">
         <option value="">
             請選擇學校
@@ -60,11 +65,6 @@
         <button onclick="getUserRank()">查詢個人備取進度</button>
         <button onclick="getReserveProcess()">查詢系組備取進度</button>
         <div id="result"></div>
-        <br>
-        <div>
-            (1)查詢個人備取進度:選擇學校>>選擇考試類別>>選擇系組>>填入考生編號/准考證號碼>>按下【查詢個人備取進度】
-            <br> (2)查詢系組備取進度:選擇學校>>選擇考試類別>>選擇系組>>按下【查詢系組備取進度】
-        </div>
     </div>
     <script>
         let groupInfo = new Map();
