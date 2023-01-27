@@ -137,7 +137,7 @@
 
             for (const group of groupList) {
                 html += `<option value = ${group.groupNo} >  ${group.name}</option>`
-                groupInfo.set(group.groupNo, `${group.registered}/${group.want}=>備取進度:${group.currentReserve}`);
+                groupInfo.set(group.groupNo, `已報到人數/正取招收人數:${group.registered}/${group.want}=>備取進度:${group.currentReserve}`);
             }
             document.getElementById("groupSelect").innerHTML = html;
             document.getElementById("userIdInput").value = "";
