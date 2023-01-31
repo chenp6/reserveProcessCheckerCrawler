@@ -14,7 +14,7 @@
             "dest": "public/index.html"
         },
         {
-            "src": "/group",
+            "src": "/group.html",
             "dest": "public/group.html"
         },
         {
