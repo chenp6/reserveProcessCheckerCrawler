@@ -14,6 +14,10 @@
             "dest": "public/index.html"
         },
         {
+            "src": "/group",
+            "dest": "public/group.html"
+        },
+        {
             "src": "/css/loadingHamster.css",
             "dest": "public/css/loadingHamster.css"
         },
