@@ -56,6 +56,11 @@ app.get("/getGroupSelect", async(req, res) => {
     return res.status(200).json(await groupTable.find({ school: req.query.school, examNo: '' + req.query.examNo }).toArray());
 });
 
+app.get("/getReserveProcess", async(req, res) => {
+    //group list
+    return res.status(200).json(await groupTable.findOne({ school: req.query.school, examNo: '' + req.query.examNo, groupNo: '' + req.query.groupNo }));
+});
+
 app.get("/getUserRank", async(req, res) => {
     //user rank
     return res.status(200).json(await processTable.findOne({ groupId: req.query.groupId, userId: req.query.userId }));

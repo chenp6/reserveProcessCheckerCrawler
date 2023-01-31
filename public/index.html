@@ -32,7 +32,12 @@
         <div style="text-align:center">Please wait while the data is loading<br>Thanks for your patient!ヾ(•ω•`)o</div>
     </div>
     <div id="loadedPage" style="display: none;">
-        <div>
+        <nav>
+            <a href="./index.html">快速查詢</a> |
+            <a href="./group.html">多系組查詢</a>
+        </nav>
+        <br>
+        <div style="border: 0.2rem solid;padding: 2vw;">
             (1)查詢系組備取進度:選擇學校>>選擇考試類別>>選擇系組>>按下【查詢系組備取進度】
             <br> (2)查詢個人備取進度:選擇學校>>選擇考試類別>>選擇系組>>填入考生編號/准考證號碼>>按下【查詢個人備取進度】
         </div>
@@ -163,7 +168,11 @@
             })
             const result = document.getElementById("result");
             const userRank = await res.json();
-            result.innerText = `名次:${userRank.rank} , 報到狀況:${userRank.status}`;
+            if (userRank == null)
+                result.innerText = `查無此考生`;
+            else {
+                result.innerText = `名次:${userRank.rank} , 報到狀況:${userRank.status}`;
+            }
         }
 
         async function getReserveProcess() {
