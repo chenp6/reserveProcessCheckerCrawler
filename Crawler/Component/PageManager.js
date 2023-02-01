@@ -15,6 +15,11 @@ export class NYCUPageManager {
 
     async selectExamType(examCode) {
         const typeSelector = 'select#ddlExamType';
+
+        //已被選擇，則不用再select
+        const selectedValue = await this.page.$eval(typeSelector + "  option[selected='selected']", element => element.getAttribute("value"))
+        if (selectedValue == examCode) return;
+
         await this.page.select(typeSelector, examCode); // 按下按鈕
         try {
             await this.page.waitForNavigation();
@@ -27,6 +32,11 @@ export class NYCUPageManager {
 
     async selectExamList(deptNo) {
         const typeSelector = 'select#ddlExamList';
+
+        //已被選擇，則不用再select
+        const selectedValue = await this.page.$eval(typeSelector + " option[selected='selected']", element => element.getAttribute("value"))
+        if (selectedValue == deptNo) return;
+
         await this.page.select(typeSelector, deptNo); // 按下按鈕
         try {
             await this.page.waitForNavigation();

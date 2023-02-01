@@ -58,7 +58,7 @@ const NYCURegisterInfo = {
     exam: new Map(),
     group: new Map()
 };
-const page = await newPage();
+const page = await newPage(true);
 const pageManager = new NYCUPageManager(page);
 
 
@@ -243,6 +243,7 @@ async function updateGroupsInfo() {
             registered: registered,
             want: want
         });
+        break;
     }
 
     /**
@@ -260,6 +261,7 @@ async function updateGroupsInfo() {
             return rank;
         }
     }
+
 }
 
 
