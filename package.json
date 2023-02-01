@@ -24,7 +24,6 @@
     },
     "scripts": {
         "start": "node index.js",
-        "test-server": "node public/test-server.js",
         "test": "jest --coverage",
         "localServer": "node index_local.js",
         "APItest": "node APItest.js"
