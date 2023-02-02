@@ -37,10 +37,6 @@ async function run() {
     await NCKU.init();
     await NCU.init();
 
-    // //get user rank
-    // console.log(await getGroupProcess(db, "CCU", "3", "1_4000"));
-    // console.log(await getUserRank(db, "CCU_3_1_4000", "340000168"));
-    // const filteredDocs = await connectionMap.get("process").find({ groupId: "CCU_1_4220" }).toArray();
     console.log(new Date() + "完成初始化!")
 
 }

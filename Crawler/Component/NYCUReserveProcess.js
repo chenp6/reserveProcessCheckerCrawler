@@ -243,7 +243,6 @@ async function updateGroupsInfo() {
             registered: registered,
             want: want
         });
-        break;
     }
 
     /**

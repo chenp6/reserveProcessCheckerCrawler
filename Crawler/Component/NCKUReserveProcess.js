@@ -76,7 +76,6 @@ export async function updateGroupsInfo() {
         const $ = cheerio.load(resultHTML);
 
 
-        const rankTable = new Map();
         let registered = 0;
         let want = 0;
         let currentReserve = "";
