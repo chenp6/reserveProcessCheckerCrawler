@@ -69,6 +69,7 @@ async function updateExams() {
     async function updateNCKUExams() {
         await updateTable("exam", { school: "NCKU", examNo: '1' }, { name: "碩士班甄試" });
         await updateTable("exam", { school: "NCKU", examNo: 'O' }, { name: "博士班甄試" });
+        await updateTable("exam", { school: "NCKU", examNo: 'H' }, { name: "寒假轉學甄試" });
     }
 
     async function updateNCUExams() {

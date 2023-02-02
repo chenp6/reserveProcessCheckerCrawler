@@ -8,7 +8,8 @@ import { updateTable } from './Utils.js';
 const NCKURegisterInfo = {
     exam: new Map([
         ["1", { type: "碩士班甄試" }],
-        ["O", { type: "博士班甄試" }]
+        ["O", { type: "博士班甄試" }],
+        ["H", { type: "寒假轉學甄試" }]
     ]),
     group: new Map()
 };
@@ -37,6 +38,8 @@ async function setGroupMap() {
             examNo = '1';
         } else if (resultArr[i].includes("A1['O']")) {
             examNo = 'O';
+        } else if (resultArr[i].includes("A1['H']")) {
+            examNo = 'H';
         } else {
             continue;
         }
