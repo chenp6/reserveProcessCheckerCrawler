@@ -21,7 +21,7 @@ async function run() {
     const db = client.db("reserveProcess");
     await db.command({ ping: 1 });
     console.log("Connected successfully to server");
-    console.log(new Date() + "開始初始化各校科系資料")
+    console.log(new Date() + "開始更新各校系組資料")
 
     await setConnections(db);
 
@@ -37,7 +37,7 @@ async function run() {
     await NCKU.init();
     await NCU.init();
 
-    console.log(new Date() + "完成初始化!")
+    console.log(new Date() + "完成更新!")
 
 }
 run().catch(console.dir);
