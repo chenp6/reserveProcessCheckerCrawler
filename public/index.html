@@ -77,7 +77,8 @@
         checkDatabaseConnection();
         reset();
 
-        function checkDatabaseConnection() {
+        function checkDatabaseConnection(onConnected) {
+            document.getElementById('loadedPage').style.display = "none";
             let preStatus = "closed";
             const statusGetter = setInterval(async() => {
                 const url = './getStatus'
@@ -88,10 +89,11 @@
                 if (preStatus != status && status == "ok") { //status:ok
                     clearInterval(statusGetter)
                     preStatus = status;
-                    document.getElementById('loadingPage').remove();
+                    onConnected();
+                    document.getElementById('loadingPage').style.display = "none";
                     document.getElementById('loadedPage').style.display = "block";
                 }
-            }, 500)
+            }, 1000)
         }
 
         function reset() {
@@ -101,7 +103,7 @@
             document.getElementById("userIdInput").value = "";
         }
 
-        document.getElementById("schoolSelect").onchange = async(e) => {
+        document.getElementById("schoolSelect").onchange = async function selectSchool(e) {
             const selectedSchool = document.getElementById("schoolSelect").value;
 
             if (selectedSchool == "") {
@@ -111,6 +113,11 @@
             const res = await fetch(url, {
                 method: 'GET',
             })
+            if (res.status == 500) {
+                checkDatabaseConnection(() => {
+                    selectSchool(e);
+                });
+            }
             const examList = await res.json()
             let html = " <option value = '' > 請選擇考試類別 </option>"
 
@@ -125,7 +132,7 @@
 
 
 
-        document.getElementById("examSelect").onchange = async(e) => {
+        document.getElementById("examSelect").onchange = async function selectExam(e) {
             groupInfo = new Map();
             const selectedSchool = document.getElementById("schoolSelect").value;
             const selectedExam = document.getElementById("examSelect").value;
@@ -137,6 +144,11 @@
             const res = await fetch(url, {
                 method: 'GET',
             })
+            if (res.status == 500) {
+                checkDatabaseConnection(() => {
+                    selectExam(e);
+                });
+            }
             const groupList = await res.json()
             let html = " <option value = '' > 請選擇系組 </option>"
 
@@ -159,13 +171,17 @@
             if (selectedSchool == "" || selectedExam == "" || selectedGroup == "" || userId == "") {
                 return;
             }
-
             const groupId = selectedSchool + "_" + selectedExam + "_" + selectedGroup;
 
             const url = `./getUserRank?groupId=${groupId}&userId=${userId}`;
             const res = await fetch(url, {
                 method: 'GET',
             })
+            if (res.status == 500) {
+                checkDatabaseConnection(() => {
+                    getUserRank();
+                });
+            }
             const result = document.getElementById("result");
             const userRank = await res.json();
             if (userRank == null)
@@ -182,6 +198,12 @@
 
             if (selectedSchool == "" || selectedExam == "" || selectedGroup == "") {
                 return;
+            }
+
+            if (res.status == 500) {
+                checkDatabaseConnection(() => {
+                    getReserveProcess()
+                });
             }
             const groupInput = document.getElementById("groupInput");
             result.innerText = groupInfo.get(selectedGroup);

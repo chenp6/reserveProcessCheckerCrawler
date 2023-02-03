@@ -162,7 +162,8 @@
         reset();
         const urlHeader = "."
 
-        function checkDatabaseConnection() {
+        function checkDatabaseConnection(onConnected) {
+            document.getElementById('loadedPage').style.display = "none";
             let preStatus = "closed";
             const statusGetter = setInterval(async() => {
                 const url = urlHeader + '/getStatus'
@@ -173,10 +174,11 @@
                 if (preStatus != status && status == "ok") { //status:ok
                     clearInterval(statusGetter)
                     preStatus = status;
-                    document.getElementById('loadingPage').remove();
+                    onConnected();
+                    document.getElementById('loadingPage').style.display = "none";
                     document.getElementById('loadedPage').style.display = "block";
                 }
-            }, 500)
+            }, 1000)
         }
 
         function reset() {
@@ -188,17 +190,22 @@
             document.getElementById("queryCodeInput").value = "";
         }
 
-        document.getElementById("schoolSelect").onchange = async(e) => {
+        document.getElementById("schoolSelect").onchange = async function selectSchool(e) {
             const selectedSchool = document.getElementById("schoolSelect").value;
-
             if (selectedSchool == "") {
                 return;
             }
+
             const url = urlHeader + `/getExamSelect?school=${selectedSchool}`;
             const res = await fetch(url, {
                 method: 'GET',
             })
-            const examList = await res.json()
+            const examList = await res.json();
+            if (res.status == 500) {
+                checkDatabaseConnection(() => {
+                    selectSchool(e)
+                });
+            }
             let html = " <option value = '' > 請選擇考試類別 </option>"
 
             for (const exam of examList) {
@@ -212,7 +219,7 @@
 
 
 
-        document.getElementById("examSelect").onchange = async(e) => {
+        document.getElementById("examSelect").onchange = async function selectExam(e) {
             const selectedSchool = document.getElementById("schoolSelect").value;
             const selectedExam = document.getElementById("examSelect").value;
             if (selectedSchool == "" || selectedExam == "") {
@@ -223,6 +230,12 @@
             const res = await fetch(url, {
                 method: 'GET',
             })
+
+            if (res.status == 500) {
+                checkDatabaseConnection(() => {
+                    selectExam(e);
+                });
+            }
             const groupList = await res.json()
             let html = " <option value = '' > 請選擇系組 </option>"
 
@@ -367,12 +380,18 @@
                 return;
             }
 
+
             const groupId = queriedSchool + "_" + queriedExam + "_" + queriedGroup;
 
             const url = urlHeader + `/getUserRank?groupId=${groupId}&userId=${queriedUserId}`;
             const res = await fetch(url, {
                 method: 'GET',
             })
+            if (res.status == 500) {
+                checkDatabaseConnection(() => {
+                    getUserRank(queriedSchool, queriedExam, queriedGroup, queriedUserId)
+                });
+            }
             const userRank = await res.json();
             if (userRank == null)
                 reuturn `查無此考生`;
@@ -389,6 +408,11 @@
             const res = await fetch(url, {
                 method: 'GET',
             })
+            if (res.status == 500) {
+                checkDatabaseConnection(() => {
+                    getReserveProcess(queriedSchool, queriedExam, queriedGroup)
+                });
+            }
             const group = await res.json();
             return `已報到人數/正取招收人數:${group.registered}/${group.want}<br>=>備取進度:${group.currentReserve}`
         }
