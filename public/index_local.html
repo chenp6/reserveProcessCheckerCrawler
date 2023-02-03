@@ -82,6 +82,7 @@
 
         function checkDatabaseConnection(onConnected) {
             document.getElementById('loadedPage').style.display = "none";
+            document.getElementById('loadingPage').style.display = "flex";
             let preStatus = "closed";
             const statusGetter = setInterval(async() => {
                 const url = urlHeader + '/getStatus'
@@ -94,7 +95,7 @@
                     preStatus = status;
                     document.getElementById('loadingPage').style.display = "none";
                     document.getElementById('loadedPage').style.display = "block";
-                    return onConnected;
+                    onConnected();
                 }
             }, 1000)
         }
@@ -106,9 +107,8 @@
             document.getElementById("userIdInput").value = "";
         }
 
-        document.getElementById("schoolSelect").onchange = async function selectSchool(e) {
+        document.getElementById("schoolSelect").onchange = async function selectSchool() {
             const selectedSchool = document.getElementById("schoolSelect").value;
-
             if (selectedSchool == "") {
                 return;
             }
@@ -117,8 +117,8 @@
                 method: 'GET',
             })
             if (res.status == 500) {
-                checkDatabaseConnection(() => {
-                    selectSchool(e);
+                const connectAndReselect = checkDatabaseConnection(() => {
+                    selectSchool();
                 });
             }
             const examList = await res.json()
@@ -135,7 +135,7 @@
 
 
 
-        document.getElementById("examSelect").onchange = async function selectExam(e) {
+        document.getElementById("examSelect").onchange = async function selectExam() {
             groupInfo = new Map();
             const selectedSchool = document.getElementById("schoolSelect").value;
             const selectedExam = document.getElementById("examSelect").value;
@@ -148,8 +148,8 @@
                 method: 'GET',
             })
             if (res.status == 500) {
-                checkDatabaseConnection(() => {
-                    selectExam(e);
+                const connectAndReselect = checkDatabaseConnection(() => {
+                    selectExam();
                 });
             }
             const groupList = await res.json()

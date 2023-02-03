@@ -165,6 +165,8 @@
 
         function checkDatabaseConnection(onConnected) {
             document.getElementById('loadedPage').style.display = "none";
+            document.getElementById('loadingPage').style.display = "flex";
+
             let preStatus = "closed";
             const statusGetter = setInterval(async() => {
                 const url = urlHeader + '/getStatus'
@@ -177,7 +179,7 @@
                     preStatus = status;
                     document.getElementById('loadingPage').style.display = "none";
                     document.getElementById('loadedPage').style.display = "block";
-                    return onConnected;
+                    onConnected();
                 }
             }, 1000)
         }
@@ -191,7 +193,10 @@
             document.getElementById("queryCodeInput").value = "";
         }
 
-        document.getElementById("schoolSelect").onchange = async function selectSchool(e) {
+        document.getElementById("schoolSelect").onchange = () => {
+            selectSchool();
+        }
+        async function selectSchool() {
             const selectedSchool = document.getElementById("schoolSelect").value;
             if (selectedSchool == "") {
                 return;
@@ -204,7 +209,7 @@
             const examList = await res.json();
             if (res.status == 500) {
                 checkDatabaseConnection(() => {
-                    selectSchool(e)
+                    selectSchool()
                 });
             }
             let html = " <option value = '' > 請選擇考試類別 </option>"
@@ -220,7 +225,10 @@
 
 
 
-        document.getElementById("examSelect").onchange = async function selectExam(e) {
+        document.getElementById("examSelect").onchange = () => {
+            selectExam();
+        }
+        async function selectExam() {
             const selectedSchool = document.getElementById("schoolSelect").value;
             const selectedExam = document.getElementById("examSelect").value;
             if (selectedSchool == "" || selectedExam == "") {
@@ -234,7 +242,7 @@
 
             if (res.status == 500) {
                 checkDatabaseConnection(() => {
-                    selectExam(e);
+                    selectExam();
                 });
             }
             const groupList = await res.json()

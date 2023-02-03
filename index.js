@@ -47,26 +47,57 @@ app.listen(3000 || process.env.PORT, () => {
 });
 
 app.get("/getExamSelect", async(req, res) => {
-    const examList = await examTable.find({ school: req.query.school }).toArray();
-    return res.status(200).json(examList);
+    try {
+        const examList = await examTable.find({ school: req.query.school }).toArray();
+        return res.status(200).json(examList);
+    } catch (error) {
+        return res.status(500).json({
+            result: null
+        })
+    }
+
 });
 
 app.get("/getGroupSelect", async(req, res) => {
     //group list
-    return res.status(200).json(await groupTable.find({ school: req.query.school, examNo: '' + req.query.examNo }).toArray());
+    try {
+        return res.status(200).json(await groupTable.find({ school: req.query.school, examNo: '' + req.query.examNo }).toArray());
+    } catch (error) {
+        return res.status(500).json({
+            result: null
+        })
+    }
 });
 
 app.get("/getReserveProcess", async(req, res) => {
     //group list
-    return res.status(200).json(await groupTable.findOne({ school: req.query.school, examNo: '' + req.query.examNo, groupNo: '' + req.query.groupNo }));
+    try {
+        return res.status(200).json(await groupTable.findOne({ school: req.query.school, examNo: '' + req.query.examNo, groupNo: '' + req.query.groupNo }));
+    } catch (error) {
+        return res.status(500).json({
+            result: null
+        })
+    }
 });
 
 app.get("/getUserRank", async(req, res) => {
     //user rank
-    return res.status(200).json(await processTable.findOne({ groupId: req.query.groupId, userId: req.query.userId }));
+    try {
+        return res.status(200).json(await processTable.findOne({ groupId: req.query.groupId, userId: req.query.userId }));
+    } catch (error) {
+        return res.status(500).json({
+            result: null
+        })
+    }
 });
 
 app.get("/getStatus", async(req, res) => {
     //user rank
-    return res.status(200).json({ status: connectStatus })
+    try {
+        return res.status(200).json({ status: connectStatus })
+    } catch (error) {
+        return res.status(500).json({
+            result: null
+        })
+    }
 });
