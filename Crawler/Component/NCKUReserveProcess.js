@@ -157,7 +157,7 @@ export async function updateGroupsInfo() {
 
     function updateReserveProcess(rank, status) {
         if (rank.includes("正取")) { //正取
-            return "(っ °Д °;)っ尚未有遞補名額";
+            return "尚未有遞補名額";
         } else if (status.includes("完成報到")) { //備取且已報到
             return rank;
         } else {
