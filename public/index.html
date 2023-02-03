@@ -70,9 +70,12 @@
         <button onclick="getUserRank()">查詢個人備取進度</button>
         <button onclick="getReserveProcess()">查詢系組備取進度</button>
         <div id="result"></div>
+        <br>
+        <div>[註]備取進度:目前最後一位報到者的位置 (若尚未有遞補名額，則顯示"目前尚未有遞補名額")</div>
     </div>
     <script>
         let groupInfo = new Map();
+        const urlHeader = "."
 
         checkDatabaseConnection();
         reset();
@@ -81,7 +84,7 @@
             document.getElementById('loadedPage').style.display = "none";
             let preStatus = "closed";
             const statusGetter = setInterval(async() => {
-                const url = './getStatus'
+                const url = urlHeader + '/getStatus'
                 const res = await fetch(url, {
                     method: 'GET'
                 })
@@ -89,9 +92,9 @@
                 if (preStatus != status && status == "ok") { //status:ok
                     clearInterval(statusGetter)
                     preStatus = status;
-                    onConnected();
                     document.getElementById('loadingPage').style.display = "none";
                     document.getElementById('loadedPage').style.display = "block";
+                    return onConnected;
                 }
             }, 1000)
         }
@@ -109,7 +112,7 @@
             if (selectedSchool == "") {
                 return;
             }
-            const url = `./getExamSelect?school=${selectedSchool}`;
+            const url = urlHeader + `/getExamSelect?school=${selectedSchool}`;
             const res = await fetch(url, {
                 method: 'GET',
             })
@@ -140,7 +143,7 @@
                 return;
             }
 
-            const url = `./getGroupSelect?school=${selectedSchool}&examNo=${selectedExam}`;
+            const url = urlHeader + `/getGroupSelect?school=${selectedSchool}&examNo=${selectedExam}`;
             const res = await fetch(url, {
                 method: 'GET',
             })
@@ -173,7 +176,7 @@
             }
             const groupId = selectedSchool + "_" + selectedExam + "_" + selectedGroup;
 
-            const url = `./getUserRank?groupId=${groupId}&userId=${userId}`;
+            const url = urlHeader + `/getUserRank?groupId=${groupId}&userId=${userId}`;
             const res = await fetch(url, {
                 method: 'GET',
             })
@@ -198,12 +201,6 @@
 
             if (selectedSchool == "" || selectedExam == "" || selectedGroup == "") {
                 return;
-            }
-
-            if (res.status == 500) {
-                checkDatabaseConnection(() => {
-                    getReserveProcess()
-                });
             }
             const groupInput = document.getElementById("groupInput");
             result.innerText = groupInfo.get(selectedGroup);

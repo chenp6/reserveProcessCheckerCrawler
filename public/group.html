@@ -139,6 +139,7 @@
                 <label for="queryCodeInput">查詢碼:</label>
                 <input type="text" id="queryCodeInput" value="" name="queryCodeInput">
                 <button onclick="getGroupQuery()" style="width: 10vw;">開始查詢</button>
+                <div>[註]備取進度:目前最後一位報到者的位置 (若尚未有遞補名額，則顯示"目前尚未有遞補名額")</div>
                 <table id="resultListTable">
                     <thead>
                         <tr>
@@ -174,9 +175,9 @@
                 if (preStatus != status && status == "ok") { //status:ok
                     clearInterval(statusGetter)
                     preStatus = status;
-                    onConnected();
                     document.getElementById('loadingPage').style.display = "none";
                     document.getElementById('loadedPage').style.display = "block";
+                    return onConnected;
                 }
             }, 1000)
         }

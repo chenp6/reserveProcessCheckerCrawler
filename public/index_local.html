@@ -9,11 +9,6 @@
     <link rel="stylesheet" href="./css/loadingHamster.css" type="text/css"> </head>
 
 <body style="font-family: 'Source Code Pro', monospace;">
-    <nav>
-        <a href="./index.html">快速查詢</a> |
-        <a href="./group.html">群組查詢</a>
-    </nav>
-    <br>
     <!-- Copy by https://uiverse.io/Nawsome/wet-mayfly-23 -->
     <div id="loadingPage" style="height:100vh; display: flex; gap:2vw; justify-content: center; align-items: center; flex-direction: column; ">
         <div aria-label="Orange and tan hamster running in a metal wheel" role="img" class="wheel-and-hamster">
@@ -37,7 +32,12 @@
         <div style="text-align:center">Please wait while the data is loading<br>Thanks for your patient!ヾ(•ω•`)o</div>
     </div>
     <div id="loadedPage" style="display: none;">
-        <div>
+        <nav>
+            <a href="./">快速查詢</a> |
+            <a href="./group.html">多系組查詢</a>
+        </nav>
+        <br>
+        <div style="border: 0.2rem solid;padding: 2vw;">
             (1)查詢系組備取進度:選擇學校>>選擇考試類別>>選擇系組>>按下【查詢系組備取進度】
             <br> (2)查詢個人備取進度:選擇學校>>選擇考試類別>>選擇系組>>填入考生編號/准考證號碼>>按下【查詢個人備取進度】
         </div>
@@ -70,15 +70,18 @@
         <button onclick="getUserRank()">查詢個人備取進度</button>
         <button onclick="getReserveProcess()">查詢系組備取進度</button>
         <div id="result"></div>
+        <br>
+        <div>[註]備取進度:目前最後一位報到者的位置 (若尚未有遞補名額，則顯示"目前尚未有遞補名額")</div>
     </div>
     <script>
         let groupInfo = new Map();
+        const urlHeader = "http://127.0.0.1:3000"
 
         checkDatabaseConnection();
         reset();
-        const urlHeader = "https://reserve-process-checker-ex19l9fek-chenp6.vercel.app"
 
-        function checkDatabaseConnection() {
+        function checkDatabaseConnection(onConnected) {
+            document.getElementById('loadedPage').style.display = "none";
             let preStatus = "closed";
             const statusGetter = setInterval(async() => {
                 const url = urlHeader + '/getStatus'
@@ -89,10 +92,11 @@
                 if (preStatus != status && status == "ok") { //status:ok
                     clearInterval(statusGetter)
                     preStatus = status;
-                    document.getElementById('loadingPage').remove();
+                    document.getElementById('loadingPage').style.display = "none";
                     document.getElementById('loadedPage').style.display = "block";
+                    return onConnected;
                 }
-            }, 500)
+            }, 1000)
         }
 
         function reset() {
@@ -102,7 +106,7 @@
             document.getElementById("userIdInput").value = "";
         }
 
-        document.getElementById("schoolSelect").onchange = async(e) => {
+        document.getElementById("schoolSelect").onchange = async function selectSchool(e) {
             const selectedSchool = document.getElementById("schoolSelect").value;
 
             if (selectedSchool == "") {
@@ -112,6 +116,11 @@
             const res = await fetch(url, {
                 method: 'GET',
             })
+            if (res.status == 500) {
+                checkDatabaseConnection(() => {
+                    selectSchool(e);
+                });
+            }
             const examList = await res.json()
             let html = " <option value = '' > 請選擇考試類別 </option>"
 
@@ -126,7 +135,7 @@
 
 
 
-        document.getElementById("examSelect").onchange = async(e) => {
+        document.getElementById("examSelect").onchange = async function selectExam(e) {
             groupInfo = new Map();
             const selectedSchool = document.getElementById("schoolSelect").value;
             const selectedExam = document.getElementById("examSelect").value;
@@ -138,6 +147,11 @@
             const res = await fetch(url, {
                 method: 'GET',
             })
+            if (res.status == 500) {
+                checkDatabaseConnection(() => {
+                    selectExam(e);
+                });
+            }
             const groupList = await res.json()
             let html = " <option value = '' > 請選擇系組 </option>"
 
@@ -160,16 +174,24 @@
             if (selectedSchool == "" || selectedExam == "" || selectedGroup == "" || userId == "") {
                 return;
             }
-
             const groupId = selectedSchool + "_" + selectedExam + "_" + selectedGroup;
 
-            const url = `./getUserRank?groupId=${groupId}&userId=${userId}`;
+            const url = urlHeader + `/getUserRank?groupId=${groupId}&userId=${userId}`;
             const res = await fetch(url, {
                 method: 'GET',
             })
+            if (res.status == 500) {
+                checkDatabaseConnection(() => {
+                    getUserRank();
+                });
+            }
             const result = document.getElementById("result");
             const userRank = await res.json();
-            result.innerText = `名次:${userRank.rank} , 報到狀況:${userRank.status}`;
+            if (userRank == null)
+                result.innerText = `查無此考生`;
+            else {
+                result.innerText = `名次:${userRank.rank} , 報到狀況:${userRank.status}`;
+            }
         }
 
         async function getReserveProcess() {

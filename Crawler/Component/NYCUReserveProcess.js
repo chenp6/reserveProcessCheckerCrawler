@@ -253,11 +253,11 @@ async function updateGroupsInfo() {
      */
     function updateReserveProcess(rank, status) {
         if (rank == "正取" || rank == "直接") {
-            return "(っ °Д °;)っ目前尚未有備取名額";
-        } else if (status == "備取") { //備取且還未備取到
-            return null;
-        } else { //空白(待報到)，已報到，放棄...等
+            return "(っ °Д °;)っ尚未有遞補名額";
+        } else if (status == "備取已報到!") { //備取且已報到
             return rank;
+        } else {
+            return null;
         }
     }
 
