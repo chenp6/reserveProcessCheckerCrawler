@@ -70,6 +70,7 @@ async function updateExams() {
 
     async function updateNCUExams() {
         await updateTable("exam", { school: "NCU", examNo: '142' }, { name: "112學年度碩士班、博士班甄試入學招生" });
+        await updateTable("exam", { school: "NCU", examNo: '143' }, { name: "112學年度碩士在職專班招生" });
     }
 }
 
