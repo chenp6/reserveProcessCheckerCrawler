@@ -1,15 +1,15 @@
 {
-    "name": "mongodb",
+    "name": "reserve-process-crawler",
     "version": "1.0.0",
-    "description": "",
+    "description": "各校備取進度查詢爬蟲 (目前有支援交大、成大、中正、中央)\r # Demo\r https://reserve-process-checker.vercel.app/",
     "main": "index.js",
     "scripts": {
         "start": "node index.js",
         "modify-server": "node Modifier.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
-    "author": "",
-    "license": "ISC",
+    "author": "chenp6",
+    "license": "MIT",
     "dependencies": {
         "cheerio": "^1.0.0-rc.12",
         "dotenv": "^16.0.3",
@@ -18,5 +18,14 @@
         "node-fetch": "^3.3.0",
         "puppeteer": "^19.5.2"
     },
-    "type": "module"
+    "type": "module",
+    "devDependencies": {},
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/chenp6/reserveProcessCheckerCrawler.git"
+    },
+    "bugs": {
+        "url": "https://github.com/chenp6/reserveProcessCheckerCrawler/issues"
+    },
+    "homepage": "https://github.com/chenp6/reserveProcessCheckerCrawler#readme"
 }
