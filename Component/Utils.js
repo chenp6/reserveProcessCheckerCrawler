@@ -4,6 +4,7 @@ export async function setConnections(db) {
     connectionMap.set("exam", await db.collection("exam", { tls: true }))
     connectionMap.set("group", await db.collection("group", { tls: true }))
     connectionMap.set("process", await db.collection("process", { tls: true }))
+    connectionMap.set("update time", await db.collection("update time", { tls: true }))
 }
 
 export function parseCookiesArray(cookies) {

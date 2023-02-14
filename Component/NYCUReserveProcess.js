@@ -68,8 +68,9 @@ export async function init() {
     await navigateToPage(page, 'https://enroll.nycu.edu.tw/');
     await setGroupMap();
     await updateGroupsInfo();
+    const now = new Date();
+    await updateTable("update time", { school: "NYCU" }, { time: `${now.getFullYear()}-${now.getMonth()}-${now.getDate()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}` });
     console.log("=== NYCU done ===")
-
 }
 
 
@@ -90,22 +91,17 @@ async function setGroupMap() {
 
 
     $("select#ddlExamType option").each(async(i, el) => {
-        const examCode = $(el).val();
-        const examInfo = $(el).text().trim();
+        const examNo = $(el).val();
+        const examType = $(el).text().trim();
 
-        const typeStartAt = getIndexofItemStart(examInfo);
-        const examNo = examInfo.substring(0, typeStartAt);
-        const examType = examInfo.substring(typeStartAt);
         NYCURegisterInfo.exam.set(examNo, {
-            type: examType,
-            code: examCode
+            type: examType
         });
     })
 
 
     for (let [examNo, examInfo] of NYCURegisterInfo.exam) {
-        const examCode = examInfo.code;
-        await pageManager.selectExamType(examCode);
+        await pageManager.selectExamType(examNo);
         const content = await page.content(); // 取得新頁面的內容
         const $$ = cheerio.load(content);
 
@@ -131,10 +127,9 @@ async function updateGroupsInfo() {
     for (const [groupNo, groupInfo] of NYCURegisterInfo.group) {
         const examNo = groupNo.split('_')[0];
 
-        const examCode = NYCURegisterInfo.exam.get(examNo).code;
         const groupCode = groupInfo.code;
 
-        await pageManager.selectExamType(examCode);
+        await pageManager.selectExamType(examNo);
         await pageManager.selectExamList(groupCode);
         const content = await page.content(); // 取得新頁面的內容
         const $ = cheerio.load(content);

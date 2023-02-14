@@ -37,8 +37,10 @@ async function run() {
     await NCKU.init();
     await NCU.init();
 
-    console.log(new Date() + "完成更新!")
+    const now = new Date();
+    await updateTable("update time", { school: "all" }, { time: `${now.getFullYear()}-${now.getMonth()}-${now.getDate()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}` });
 
+    console.log(new Date() + "完成更新!")
 }
 run().catch(console.dir);
 
@@ -57,9 +59,10 @@ async function updateExams() {
     }
 
     async function updateNYCUExams() {
-        await updateTable("exam", { school: "NYCU", examNo: '112E' }, { name: "陽明校區博士班甄試" });
-        await updateTable("exam", { school: "NYCU", examNo: '112A' }, { name: "陽明校區碩士班甄試" });
-        await updateTable("exam", { school: "NYCU", examNo: '112' }, { name: "交大校區碩博班甄試" });
+        await updateTable("exam", { school: "NYCU", examNo: '61084878-2993-45d1-9df3-2de07839e2ff' }, { name: "112 交大校區碩博班甄試" });
+        await updateTable("exam", { school: "NYCU", examNo: '3eb0b43c-64bf-4652-8b04-7ffca7ac4a80' }, { name: "112A陽明校區碩士班甄試" });
+        await updateTable("exam", { school: "NYCU", examNo: '3ea8d555-a4de-451d-828f-1023878e560a' }, { name: "112E陽明校區博士甄試" });
+        await updateTable("exam", { school: "NYCU", examNo: 'a0a0df5c-72fd-4467-9ce4-0e4a3d42ca06' }, { name: "112 交大校區EMBA" });
     }
 
     async function updateNCKUExams() {

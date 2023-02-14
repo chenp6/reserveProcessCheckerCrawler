@@ -61,6 +61,8 @@ export async function init() {
     console.log("=== NCU loading ===")
     await setGroupMap();
     await updateGroupsInfo();
+    const now = new Date();
+    await updateTable("update time", { school: "NCU" }, { time: `${now.getFullYear()}-${now.getMonth()}-${now.getDate()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}` });
     console.log("=== NCU done ===")
 
 }
