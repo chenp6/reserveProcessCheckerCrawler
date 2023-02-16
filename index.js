@@ -4,6 +4,7 @@ import * as CCU from './Component/CCUReserveProcess.js';
 import * as NYCU from './Component/NYCUReserveProcess.js';
 import * as NCKU from './Component/NCKUReserveProcess.js';
 import * as NCU from './Component/NCUReserveProcess.js';
+import * as NCCU from './Component/NCCUReserveProcess.js';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -36,6 +37,7 @@ async function run() {
     await NYCU.init();
     await NCKU.init();
     await NCU.init();
+    await NCCU.init();
 
     await updateUpdateTime("all");
     console.log(new Date() + "完成更新!")
@@ -47,7 +49,7 @@ async function updateExams() {
     await updateNYCUExams();
     await updateNCKUExams();
     await updateNCUExams();
-
+    await updateNCCUExams();
     async function updateCCUExams() {
         // await updateTable("exam", { school: "CCU", examNo: '1' }, { name: "111學年度碩士班招生考試" });
         // await updateTable("exam", { school: "CCU", examNo: '2' }, { name: "111學年度博士班招生考試" });
@@ -72,6 +74,13 @@ async function updateExams() {
     async function updateNCUExams() {
         await updateTable("exam", { school: "NCU", examNo: '142' }, { name: "112學年度碩士班、博士班甄試入學招生" });
         await updateTable("exam", { school: "NCU", examNo: '143' }, { name: "112學年度碩士在職專班招生" });
+    }
+
+    async function updateNCCUExams() {
+        await updateTable("exam", { school: "NCCU", examNo: '112,1' }, { name: "112碩班甄試" });
+        await updateTable("exam", { school: "NCCU", examNo: '112,8' }, { name: "112博班甄試" });
+        await updateTable("exam", { school: "NCCU", examNo: '112,9' }, { name: "112僑生單招(個人自薦)" });
+        await updateTable("exam", { school: "NCCU", examNo: '112,C' }, { name: "112僑生單招(學校推薦)" });
     }
 }
 
