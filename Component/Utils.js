@@ -28,6 +28,15 @@ export async function updateTable(tableName, idField, content) {
         await table.insertOne(content);
     }
 }
+export async function updateUpdateTime(school) {
+    const now = new Date();
+    const month = (now.getMonth()+1).toString().padStart(2, "0");
+    const date = now.getDate().toString().padStart(2, "0");
+    const hour = now.getHours().toString().padStart(2, "0");
+    const min = now.getMinutes().toString().padStart(2, "0");
+    const sec = now.getSeconds().toString().padStart(2, "0");
+    await updateTable("update time", { school: school }, { time: `${now.getFullYear()}-${month}-${date} ${hour}:${min}:${sec}` });
+}
 
 export async function getAllObjects(tableName) {
     const filteredDocs = await connectionMap.get(tableName).find({}).toArray();

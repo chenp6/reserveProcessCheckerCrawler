@@ -1,6 +1,6 @@
 import cheerio from 'cheerio';
 import fetch from 'node-fetch';
-import { updateTable } from './Utils.js';
+import { updateTable, updateUpdateTime } from './Utils.js';
 //Example 
 /*
 【group table】
@@ -61,8 +61,7 @@ export async function init() {
     console.log("=== NCU loading ===")
     await setGroupMap();
     await updateGroupsInfo();
-    const now = new Date();
-    await updateTable("update time", { school: "NCU" }, { time: `${now.getFullYear()}-${now.getMonth()}-${now.getDate()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}` });
+    await updateUpdateTime("NCU");
     console.log("=== NCU done ===")
 
 }

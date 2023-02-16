@@ -1,5 +1,5 @@
 import { MongoClient } from "mongodb";
-import { connectionMap, setConnections, updateTable, getAllObjects } from "./Component/Utils.js";
+import { connectionMap, setConnections, updateTable, updateUpdateTime, getAllObjects } from "./Component/Utils.js";
 import * as CCU from './Component/CCUReserveProcess.js';
 import * as NYCU from './Component/NYCUReserveProcess.js';
 import * as NCKU from './Component/NCKUReserveProcess.js';
@@ -37,9 +37,7 @@ async function run() {
     await NCKU.init();
     await NCU.init();
 
-    const now = new Date();
-    await updateTable("update time", { school: "all" }, { time: `${now.getFullYear()}-${now.getMonth()}-${now.getDate()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}` });
-
+    await updateUpdateTime("all");
     console.log(new Date() + "完成更新!")
 }
 run().catch(console.dir);
