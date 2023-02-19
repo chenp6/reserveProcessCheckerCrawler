@@ -1,7 +1,7 @@
 import cheerio from 'cheerio';
 import FormData from 'form-data';
 import fetch from 'node-fetch';
-import { updateTable, updateUpdateTime } from './Utils.js';
+import { updateTable } from './Utils.js';
 //Reference:https://mealiy62307.medium.com/node-js-node-js-%E7%88%AC%E8%9F%B2%E8%88%87-line-bot-b94356fcd59d
 
 
@@ -19,7 +19,6 @@ export async function init() {
     console.log("=== NCKU loading ===")
     await setGroupMap();
     await updateGroupsInfo()
-    await updateUpdateTime("NCKU");
     console.log("=== NKCU done ===")
 
 }

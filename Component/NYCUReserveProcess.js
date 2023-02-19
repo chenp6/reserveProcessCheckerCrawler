@@ -2,7 +2,7 @@ import cheerio from 'cheerio';
 import fetch from 'node-fetch';
 import https from 'https';
 import { newPage, NYCUPageManager, navigateToPage } from './PageManager.js';
-import { updateTable, updateUpdateTime } from './Utils.js';
+import { updateTable } from './Utils.js';
 //Example 
 /*
 【group table】
@@ -69,7 +69,6 @@ export async function init() {
     await setGroupMap();
     await updateGroupsInfo();
     const now = new Date();
-    await updateUpdateTime("NYCU");
     console.log("=== NYCU done ===")
 }
 
@@ -82,7 +81,6 @@ async function setGroupMap() {
     const res = await fetch(url, {
         method: 'GET',
         agent: httpsAgent
-
     })
     const resultHTML = await res.text();
     const $ = cheerio.load(resultHTML);

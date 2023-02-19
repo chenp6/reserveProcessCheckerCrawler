@@ -1,7 +1,7 @@
 import cheerio from 'cheerio';
 import fetch from 'node-fetch';
 import { Headers } from 'node-fetch';
-import { parseCookiesStr, updateTable, updateUpdateTime } from './Utils.js';
+import { parseCookiesStr, updateTable } from './Utils.js';
 //Example 
 /*
 【group table】
@@ -59,7 +59,6 @@ export async function init() {
     console.log("=== CCU loading ===")
     await setGroupMap();
     await updateGroupsInfo();
-    await updateUpdateTime("CCU");
     console.log("=== CCU done ===")
 }
 

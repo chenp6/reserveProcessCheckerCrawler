@@ -1,6 +1,6 @@
 import cheerio from 'cheerio';
 import fetch from 'node-fetch';
-import { updateTable, updateUpdateTime } from './Utils.js';
+import { updateTable } from './Utils.js';
 //Example 
 /*
 【group table】
@@ -61,7 +61,6 @@ export async function init() {
     console.log("=== NCU loading ===")
     await setGroupMap();
     await updateGroupsInfo();
-    await updateUpdateTime("NCU");
     console.log("=== NCU done ===")
 
 }
