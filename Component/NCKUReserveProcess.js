@@ -7,7 +7,7 @@ import { updateTable } from './Utils.js';
 
 const NCKURegisterInfo = {
     exam: new Map([
-        ["1", { type: "碩士班甄試" }],
+        // ["1", { type: "碩士班甄試" }],
         ["O", { type: "博士班甄試" }],
         ["H", { type: "寒假轉學甄試" }]
     ]),

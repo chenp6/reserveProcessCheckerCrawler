@@ -92,7 +92,7 @@ async function updateGroupsInfo() {
             //td:eq(5)是抓取第六欄的文字 => 遞補結果
             const reserve = $(element).find("td:eq(5)").text().trim();
             //td:eq(4)是抓取第五欄的文字 => 報到結果
-            const register = $(element).find("td:eq(4)").text().trim();;
+            const register = $(element).find("td:eq(4)").text().trim();
 
             if (waiver.includes("已放棄") || register.includes("放棄")) {
                 //td:eq(6)是抓取第七欄的文字 => 放棄結果

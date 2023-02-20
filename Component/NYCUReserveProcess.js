@@ -55,7 +55,12 @@ const NYCURegisterInfo = {
 };
 */
 const NYCURegisterInfo = {
-    exam: new Map(),
+    exam: new Map([
+        ["3ea8d555-a4de-451d-828f-1023878e560a", { type: "112E陽明校區博士甄試" }],
+        // ["3eb0b43c-64bf-4652-8b04-7ffca7ac4a80", { type: "112A陽明校區碩士班甄試" }],
+        // ["61084878-2993-45d1-9df3-2de07839e2ff", { type: "112 交大校區碩博班甄試" }],
+        ["a0a0df5c-72fd-4467-9ce4-0e4a3d42ca06", { type: "112 交大校區EMBA" }]
+    ]),
     group: new Map()
 };
 const page = await newPage(true);
@@ -74,30 +79,6 @@ export async function init() {
 
 
 async function setGroupMap() {
-    const httpsAgent = new https.Agent({
-        rejectUnauthorized: false
-    });
-    const url = 'https://enroll.nycu.edu.tw/'
-    const res = await fetch(url, {
-        method: 'GET',
-        agent: httpsAgent
-    })
-    const resultHTML = await res.text();
-    const $ = cheerio.load(resultHTML);
-
-
-
-
-    $("select#ddlExamType option").each(async(i, el) => {
-        const examNo = $(el).val();
-        const examType = $(el).text().trim();
-
-        NYCURegisterInfo.exam.set(examNo, {
-            type: examType
-        });
-    })
-
-
     for (let [examNo, examInfo] of NYCURegisterInfo.exam) {
         await pageManager.selectExamType(examNo);
         const content = await page.content(); // 取得新頁面的內容

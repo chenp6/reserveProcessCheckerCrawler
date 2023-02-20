@@ -63,7 +63,7 @@ export async function init() {
 }
 
 
-const examList = [3];
+const examList = []; //推甄:3
 async function setGroupMap() {
     for (const examNo of examList) {
         const url = `https://www026198.ccu.edu.tw/academic/query_reg/query_reg_${examNo}.php`;
