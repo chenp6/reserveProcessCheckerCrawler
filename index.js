@@ -31,8 +31,11 @@ async function run() {
     await NCKU.init();
     await NCU.init();
     await NCCU.init();
+    await NKUST.init();
+    await NTU.init();
 
     await updateExams(db);
+
     //get all exams
     // await getAllObjects("exam");
 
@@ -42,11 +45,8 @@ async function run() {
 run().catch(console.dir);
 
 async function updateExams() {
-    await updateCCUExams();
-    await updateNYCUExams();
-    await updateNCKUExams();
-    await updateNCUExams();
-    await updateNCCUExams();
+    await updateNTUExams();
+
     async function updateCCUExams() {
         // await updateTable("exam", { school: "CCU", examNo: '1' }, { name: "111學年度碩士班招生考試" });
         // await updateTable("exam", { school: "CCU", examNo: '2' }, { name: "111學年度博士班招生考試" });
@@ -102,8 +102,9 @@ async function updateExams() {
         await updateTable("exam", { school: "NCCU", examNo: '112,9' }, { name: "112僑生單招(個人自薦)" });
         await updateUpdateTime("NCCU", "112,9");
 
-        await updateTable("exam", { school: "NCCU", examNo: '112,C' }, { name: "112僑生單招(學校推薦)" });
-        await updateUpdateTime("NCCU", "112,C");
+    async function updateNTUExams() {
+        await updateTable("exam", { school: "NTU", examNo: 'regchk/stu_query' }, { name: "112學年度碩士班甄試" });
+        await updateUpdateTime("NTU", "regchk/stu_query");
     }
 }
 
