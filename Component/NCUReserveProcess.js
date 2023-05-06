@@ -50,7 +50,8 @@ const NCURegisterInfo = {
 const NCURegisterInfo = {
     exam: new Map([
         ["142", { type: "112學年度碩士班、博士班甄試入學招生" }],
-        ["143", { type: "112學年度碩士在職專班招生" }]
+        ["143", { type: "112學年度碩士在職專班招生" }],
+        ["146", { type: "112學年度碩士班考試入學招生" }]
     ]),
     group: new Map()
 };

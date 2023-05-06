@@ -8,8 +8,9 @@ import { updateTable } from './Utils.js';
 
 const NCCURegisterInfo = {
     exam: new Map([
-        ["112,1", { type: "112碩班甄試" }],
+        // ["112,1", { type: "112碩班甄試" }],
         ["112,8", { type: "112博班甄試" }],
+        ["112,2", { type: "112碩士班(考試入學)" }]
     ]),
     group: new Map()
 };
@@ -26,11 +27,13 @@ const NCCUOtherRegisterInfo = {
 
 
 export async function init() {
-    console.log("=== NCCU loading ===")
+    const now = new Date().getHours();
+    if (now >= 2 && now <= 6) return;
+    console.log("=== NCCU loading ===");
     await setGroupMap();
     await updateGroupsInfo()
     await setOtherGroupsMap();
-    console.log("=== NCCU done ===")
+    console.log("=== NCCU done ===");
 }
 
 async function setGroupMap() {

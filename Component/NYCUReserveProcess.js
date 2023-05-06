@@ -56,6 +56,7 @@ const NYCURegisterInfo = {
 */
 const NYCURegisterInfo = {
     exam: new Map([
+        ["5df45783-fb4c-4a13-88a3-88505c144674", { type: "112 交大校區碩士班及在職專班考試" }],
         ["3ea8d555-a4de-451d-828f-1023878e560a", { type: "112E陽明校區博士甄試" }],
         // ["3eb0b43c-64bf-4652-8b04-7ffca7ac4a80", { type: "112A陽明校區碩士班甄試" }],
         // ["61084878-2993-45d1-9df3-2de07839e2ff", { type: "112 交大校區碩博班甄試" }],
@@ -63,7 +64,7 @@ const NYCURegisterInfo = {
     ]),
     group: new Map()
 };
-const page = await newPage(true);
+const page = await newPage(false);
 const pageManager = new NYCUPageManager(page);
 
 
@@ -73,13 +74,12 @@ export async function init() {
     await navigateToPage(page, 'https://enroll.nycu.edu.tw/');
     await setGroupMap();
     await updateGroupsInfo();
-    const now = new Date();
     console.log("=== NYCU done ===")
 }
 
 
 async function setGroupMap() {
-    for (let [examNo, examInfo] of NYCURegisterInfo.exam) {
+    for (let examNo of NYCURegisterInfo.exam.keys()) {
         await pageManager.selectExamType(examNo);
         const content = await page.content(); // 取得新頁面的內容
         const $$ = cheerio.load(content);

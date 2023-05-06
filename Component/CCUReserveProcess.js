@@ -50,7 +50,10 @@ const CCURegisterInfo = {
 */
 const CCURegisterInfo = {
     group: new Map(),
-    exam: new Map()
+    exam: new Map([
+        // ["3", { link: ["ccuee_gp/Final-1","ccuee_gp/Final"], type: "112學年度碩士班甄試" }],
+        ["1", { link: ["ccuee_gs/Final1"], type: "112學年度碩士班招生考試" }]
+    ]),
 };
 
 
@@ -63,9 +66,8 @@ export async function init() {
 }
 
 
-const examList = []; //推甄:3
 async function setGroupMap() {
-    for (const examNo of examList) {
+    for (const [examNo, examInfo] of CCURegisterInfo.exam) {
         const url = `https://www026198.ccu.edu.tw/academic/query_reg/query_reg_${examNo}.php`;
         const res = await fetch(url, {
             method: 'GET'
@@ -83,6 +85,7 @@ async function setGroupMap() {
             CCURegisterInfo.group.set(examNo + "_" + getGroupNo(queryLink), {
                 name: groupName,
                 link: queryLink,
+                examLink: examInfo.link
             })
         })
     }
@@ -99,16 +102,26 @@ async function setGroupMap() {
 async function updateGroupsInfo() {
     for (const [groupId, groupInfo] of CCURegisterInfo.group) {
         const [examNo, examKind, deptNo] = groupId.split('_');
+
+        let hasDash = "";
+        if (examNo == "3") {
+            hasDash = "_";
+        }
         //榜單網頁
-        let rankUrl = `https://www.exam.ccu.edu.tw/ccuee_gp/Final-1/Name_${deptNo}.html` //第一階錄取科系
+        let rankUrl = `https://www.exam.ccu.edu.tw/${groupInfo.examLink[0]}/Name${hasDash}${deptNo}.html` //第一階錄取科系
         let rankRes = await fetch(rankUrl, {
             method: 'GET'
         })
+
         if (rankRes.status != 200) { //第二階錄取科系
-            rankUrl = `https://www.exam.ccu.edu.tw/ccuee_gp/Final/Name_${deptNo}.html`
-            rankRes = await fetch(rankUrl, {
-                method: 'GET',
-            })
+            if (groupInfo.examLink.length > 1) {
+                rankUrl = `https://www.exam.ccu.edu.tw/${groupInfo.examLink[1]}/Name${hasDash}${deptNo}.html`
+                rankRes = await fetch(rankUrl, {
+                    method: 'GET',
+                })
+            } else {
+                continue;
+            }
         }
         const rankResultHTML = await rankRes.text();
         const $ = cheerio.load(rankResultHTML);
@@ -217,6 +230,7 @@ async function updateGroupsInfo() {
             registered: registered,
             want: want
         });
+
 
     }
 
