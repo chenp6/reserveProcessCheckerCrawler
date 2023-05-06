@@ -50,17 +50,19 @@ async function run() {
 run().catch(console.dir);
 
 async function updateExams() {
-    // await updateCCUExams();
-    // await updateNYCUExams();
-    // await updateNCKUExams();
-    // await updateNCUExams();
-    // await updateNCCUExams();
-    // await updateNKUSTExams();
+    await updateCCUExams();
+    await updateNYCUExams();
+    await updateNCKUExams();
+    await updateNCUExams();
+    await updateNCCUExams();
+    await updateNKUSTExams();
     await updateNTUExams();
     await updateNSYSUExams();
 
     async function updateCCUExams() {
-        // await updateTable("exam", { school: "CCU", examNo: '1' }, { name: "111學年度碩士班招生考試" });
+        // await updateTable("exam", { school: "CCU", examNo: '1' }, { name: "112學年度碩士班招生考試" });
+        await updateUpdateTime("CCU", '1');
+
         // await updateTable("exam", { school: "CCU", examNo: '2' }, { name: "111學年度博士班招生考試" });
 
         // await updateTable("exam", { school: "CCU", examNo: '3' }, { name: "112學年度碩士班甄試" });
@@ -71,6 +73,9 @@ async function updateExams() {
     }
 
     async function updateNYCUExams() {
+        // await updateTable("exam", { school: "NYCU", examNo: '5df45783-fb4c-4a13-88a3-88505c144674' }, { name: "112 交大校區碩士班(考試入學)及在職專班考試" });
+        await updateUpdateTime("NYCU", '5df45783-fb4c-4a13-88a3-88505c144674');
+
         // await updateTable("exam", { school: "NYCU", examNo: '61084878-2993-45d1-9df3-2de07839e2ff' }, { name: "112 交大校區碩博班甄試" });
         await updateUpdateTime("NYCU", '61084878-2993-45d1-9df3-2de07839e2ff');
 
@@ -95,6 +100,8 @@ async function updateExams() {
         // await updateTable("exam", { school: "NCKU", examNo: 'H' }, { name: "寒假轉學甄試" });
         await updateUpdateTime("NCKU", "H");
 
+        // await updateTable("exam", { school: "NCKU", examNo: '2' }, { name: "碩士班" });
+        await updateUpdateTime("NCKU", "2");
     }
 
     async function updateNCUExams() {
@@ -104,6 +111,8 @@ async function updateExams() {
         // await updateTable("exam", { school: "NCU", examNo: '143' }, { name: "112學年度碩士在職專班招生" });
         await updateUpdateTime("NCU", "143");
 
+        // await updateTable("exam", { school: "NCU", examNo: '146' }, { name: "112學年度碩士班考試入學招生" });
+        await updateUpdateTime("NCU", "146");
     }
 
     async function updateNCCUExams() {
@@ -112,6 +121,9 @@ async function updateExams() {
 
         // await updateTable("exam", { school: "NCCU", examNo: '112,8' }, { name: "112博班甄試" });
         await updateUpdateTime("NCCU", "112,8");
+
+        // await updateTable("exam", { school: "NCCU", examNo: '112,2' }, { name: "112碩士班(考試入學)" });
+        await updateUpdateTime("NCCU", "112,2");
 
         // await updateTable("exam", { school: "NCCU", examNo: '112,9' }, { name: "112僑生單招(個人自薦)" });
         // await updateUpdateTime("NCCU", "112,9");
@@ -135,8 +147,16 @@ async function updateExams() {
     }
 
     async function updateNTUExams() {
-        await updateTable("exam", { school: "NTU", examNo: 'regchk/stu_query' }, { name: "112學年度碩士班甄試" });
-        await updateUpdateTime("NTU", "regchk/stu_query");
+        // await updateTable("exam", { school: "NTU", examNo: 'regchk/stu_query' }, { name: "112學年度碩士班甄試" });
+        // await updateUpdateTime("NTU", "regchk/stu_query");
+
+        // await updateTable("exam", { school: "NTU", examNo: 'regbchk/stu_query' }, { name: "112學年度碩士班一般考試" });
+        await updateUpdateTime("NTU", "regbchk/stu_query");
+    }
+
+    async function updateNSYSUExams() {
+        // await updateTable("exam", { school: "NSYSU", examNo: '112,41' }, { name: "112學年度考試入學" });
+        await updateUpdateTime("NSYSU", "112,41");
     }
 }
 
