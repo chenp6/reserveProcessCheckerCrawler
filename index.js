@@ -7,6 +7,7 @@ import * as NCU from './Component/NCUReserveProcess.js';
 import * as NCCU from './Component/NCCUReserveProcess.js';
 import * as NKUST from './Component/NKUSTReserveProcess.js';
 import * as NTU from './Component/NTUReserveProcess.js';
+import * as NSYSU from './Component/NSYSUReserveProcess.js';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -36,6 +37,7 @@ async function run() {
     await NCCU.init();
     await NKUST.init();
     await NTU.init();
+    await NSYSU.init();
 
     await updateExams(db);
 
@@ -55,6 +57,7 @@ async function updateExams() {
     // await updateNCCUExams();
     // await updateNKUSTExams();
     await updateNTUExams();
+    await updateNSYSUExams();
 
     async function updateCCUExams() {
         // await updateTable("exam", { school: "CCU", examNo: '1' }, { name: "111學年度碩士班招生考試" });
