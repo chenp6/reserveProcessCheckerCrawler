@@ -1,6 +1,8 @@
 import cheerio from 'cheerio';
 import fetch from 'node-fetch';
-import { updateTable } from './Utils.js';
+import { updateTable, stringEncodeToBig5 } from './Utils.js';
+import iconv from 'iconv-lite';
+
 //Example 
 /*
 【group table】
@@ -51,7 +53,8 @@ const NTURegisterInfo = {
 */
 const NTURegisterInfo = {
     exam: new Map([
-        ["regchk/stu_query", { type: "112學年度碩士班甄試" }],
+        // ["regchk/stu_query", { type: "112學年度碩士班甄試", isBig5: false,reservedColor:"#FFFF00" }],
+        ["regbchk/stu_query", { type: "112學年度碩士班(考試入學)", isBig5: true, reservedColor: "#00F7FA" }]
     ]),
     group: new Map()
 };
@@ -68,31 +71,52 @@ export async function init() {
 
 
 async function setGroupMap() {
-    for (const examNo of NTURegisterInfo.exam.keys()) {
+    for (const [examNo, examInfo] of NTURegisterInfo.exam) {
         const url = `https://gra108.aca.ntu.edu.tw/${examNo}.asp`;
         const res = await fetch(url, {
             method: 'GET',
         })
-        const resultHTML = await res.text();
+
+        let resultHTML = "";
+        if (examInfo.isBig5) {
+            const buffer = await res.arrayBuffer();
+            resultHTML = iconv.decode(Buffer.from(buffer), 'big5');
+        } else {
+            resultHTML = await res.text();
+        }
+
+
         const $ = cheerio.load(resultHTML);
 
         $("select option").each(async(index, element) => {
-            const groupName = $(element).val();
+            const groupName = $(element).val().trim();
             if (groupName == "") return;
             const idEndAt = getIndexofItemStart(groupName);
             const groupNo = groupName.substring(0, idEndAt);
-            NTURegisterInfo.group.set(examNo + "_" + groupNo, { examNo: examNo, groupNo: groupNo, name: groupName })
+            NTURegisterInfo.group.set(examNo + "_" + groupNo, { examNo: examNo, groupNo: groupNo, name: groupName, isBig5: examInfo.isBig5, reservedColor: examInfo.reservedColor })
         })
     }
 }
 
 async function updateGroupsInfo() {
     for (const [groupId, groupInfo] of NTURegisterInfo.group) {
-        const rankUrl = `https://gra108.aca.ntu.edu.tw/regchk/stu_query.asp?DEP=${groupInfo.name}&qry=查詢`
-        const rankRes = await fetch(rankUrl, {
-            method: 'POST'
-        })
-        const rankResultHTML = await rankRes.text();
+        let rankResultHTML = "";
+        if (groupInfo.isBig5) {
+            const rankUrl = `https://gra108.aca.ntu.edu.tw/${groupInfo.examNo}.asp?DEP=${stringEncodeToBig5(groupInfo.name)}&qry=查詢`
+            const rankRes = await fetch(rankUrl, {
+                method: 'POST'
+            })
+            const buffer = await rankRes.arrayBuffer();
+            rankResultHTML = iconv.decode(Buffer.from(buffer), 'big5');
+        } else {
+            const rankUrl = `https://gra108.aca.ntu.edu.tw/${groupInfo.examNo}.asp?DEP=${groupInfo.name}&qry=查詢`
+            const rankRes = await fetch(rankUrl, {
+                method: 'POST'
+            })
+            rankResultHTML = await rankRes.text();
+        }
+
+
         const $ = cheerio.load(rankResultHTML);
 
         let registered = 0;
@@ -124,7 +148,7 @@ async function updateGroupsInfo() {
             const reserve = $(element).find("td:eq(5)").text().trim();
             let status = $(element).find(`td:eq(4)`).text().trim(); //全部放棄/未報到/已放棄/志願順位
             //td:eq(4)是抓取第五欄的文字 => 報到狀態 
-            if ($(element).attr("bgcolor") == "#FFFF00") { //已報到
+            if ($(element).attr("bgcolor") == groupInfo.reservedColor) { //已報到
                 status = "已報到";
             } else if (ps.includes("放棄")) { //已遞補且放棄
                 status = ps;
@@ -160,13 +184,12 @@ async function updateGroupsInfo() {
              */
             await updateTable("process", {
                 groupId: "NTU_" + groupId,
-                userId: userId
+                userId: userId,
             }, {
                 index: index,
                 rank: rank,
-                status: status
+                status: status,
             });
-
 
 
         });
@@ -194,6 +217,7 @@ async function updateGroupsInfo() {
             registered: registered,
             want: want
         });
+
 
     }
 
