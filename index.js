@@ -24,7 +24,7 @@ async function run() {
 
     // Establish and verify connection
     const db = client.db("reserveProcess");
-    await db.command({ ping: 1 });
+    console.log(await db.command({ ping: 1 }));
     console.log("Connected successfully to server");
     console.log(new Date() + "開始更新各校系組資料")
 
