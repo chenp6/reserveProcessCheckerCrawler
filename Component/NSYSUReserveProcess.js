@@ -44,10 +44,9 @@ async function setGroupMap() {
             headers: headers
         });
 
-        const buffer = await res.arrayBuffer()
-        const resultHTML = iconv.decode(Buffer.from(buffer), 'big5');
-
+        const resultHTML = await res.text();
         const $ = cheerio.load(resultHTML);
+
         $("select option").each(async(index, element) => {
             if (index == 0) return;
             const groupField = $(element).val();
@@ -71,12 +70,11 @@ async function updateGroupsInfo() {
                 "Content-Type": "application/x-www-form-urlencoded",
                 "Cookie": cookiesHeader
             },
-            "body": `sect_no=${stringEncodeToBig5(groupNo)}&examno=${examNo}&YR=${year}`,
+            "body": `sect_no=${groupNo}&examno=${examNo}&YR=${year}`,
             "method": "POST",
         });
 
-        const buffer = await res.arrayBuffer()
-        const resultHTML = iconv.decode(Buffer.from(buffer), 'big5');
+        const resultHTML = await res.text();
         const $ = cheerio.load(resultHTML);
 
 
