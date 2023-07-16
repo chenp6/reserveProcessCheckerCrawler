@@ -5,7 +5,6 @@ import * as NYCU from './Component/NYCUReserveProcess.js';
 import * as NCKU from './Component/NCKUReserveProcess.js';
 import * as NCU from './Component/NCUReserveProcess.js';
 import * as NCCU from './Component/NCCUReserveProcess.js';
-import * as NKUST from './Component/NKUSTReserveProcess.js';
 import * as NTU from './Component/NTUReserveProcess.js';
 import * as NSYSU from './Component/NSYSUReserveProcess.js';
 
@@ -35,7 +34,6 @@ async function run() {
     await NCKU.init();
     await NCU.init();
     await NCCU.init();
-    await NKUST.init();
     await NTU.init();
     await NSYSU.init();
 
