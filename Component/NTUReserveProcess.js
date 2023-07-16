@@ -2,8 +2,8 @@ import cheerio from 'cheerio';
 import fetch from 'node-fetch';
 import { updateTable, stringEncodeToBig5 } from './Utils.js';
 import iconv from 'iconv-lite';
+import https from 'https';
 
-//Example 
 /*
 【group table】
 idField => {
@@ -72,9 +72,14 @@ export async function init() {
 
 async function setGroupMap() {
     for (const [examNo, examInfo] of NTURegisterInfo.exam) {
+
         const url = `https://gra108.aca.ntu.edu.tw/${examNo}.asp`;
+        const httpsAgent = new https.Agent({
+            rejectUnauthorized: false
+        });
         const res = await fetch(url, {
             method: 'GET',
+            agent: httpsAgent
         })
 
         let resultHTML = "";
@@ -99,12 +104,23 @@ async function setGroupMap() {
 }
 
 async function updateGroupsInfo() {
+    // const rootCas = create(); //Example 
+
+    // const httpsAgent = new https.Agent({
+    //     ca: rootCas
+    // });
+
     for (const [groupId, groupInfo] of NTURegisterInfo.group) {
         let rankResultHTML = "";
+
         if (groupInfo.isBig5) {
             const rankUrl = `https://gra108.aca.ntu.edu.tw/${groupInfo.examNo}.asp?DEP=${stringEncodeToBig5(groupInfo.name)}&qry=查詢`
+            const httpsAgent = new https.Agent({
+                rejectUnauthorized: false
+            });
             const rankRes = await fetch(rankUrl, {
-                method: 'POST'
+                method: 'POST',
+                agent: httpsAgent
             })
             const buffer = await rankRes.arrayBuffer();
             rankResultHTML = iconv.decode(Buffer.from(buffer), 'big5');
@@ -123,7 +139,6 @@ async function updateGroupsInfo() {
         let want = 0;
         let currentReserve = "";
         $("table > tbody > tr").each(async(index, element) => {
-
             if (index == 0) { //標題列
                 return;
             }
