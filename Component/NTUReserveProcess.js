@@ -1,8 +1,8 @@
 import cheerio from 'cheerio';
-import fetch from 'node-fetch';
 import { updateTable, stringEncodeToBig5 } from './Utils.js';
 import iconv from 'iconv-lite';
-import https from 'https';
+import { Agent } from "undici"
+import crypto from 'crypto';
 
 /*
 【group table】
@@ -74,22 +74,27 @@ async function setGroupMap() {
     for (const [examNo, examInfo] of NTURegisterInfo.exam) {
 
         const url = `https://gra108.aca.ntu.edu.tw/${examNo}.asp`;
-        const httpsAgent = new https.Agent({
-            rejectUnauthorized: false
-        });
+
+
         const res = await fetch(url, {
             method: 'GET',
-            agent: httpsAgent
-        })
+            dispatcher: new Agent({
+                connect: {
+                    rejectUnauthorized: false,
+                    secureOptions: crypto.constants.SSL_OP_LEGACY_SERVER_CONNECT
+                }
+            })
+        });
+
 
         let resultHTML = "";
+
         if (examInfo.isBig5) {
             const buffer = await res.arrayBuffer();
             resultHTML = iconv.decode(Buffer.from(buffer), 'big5');
         } else {
             resultHTML = await res.text();
         }
-
 
         const $ = cheerio.load(resultHTML);
 
@@ -104,23 +109,21 @@ async function setGroupMap() {
 }
 
 async function updateGroupsInfo() {
-    // const rootCas = create(); //Example 
-
-    // const httpsAgent = new https.Agent({
-    //     ca: rootCas
-    // });
 
     for (const [groupId, groupInfo] of NTURegisterInfo.group) {
         let rankResultHTML = "";
 
         if (groupInfo.isBig5) {
             const rankUrl = `https://gra108.aca.ntu.edu.tw/${groupInfo.examNo}.asp?DEP=${stringEncodeToBig5(groupInfo.name)}&qry=查詢`
-            const httpsAgent = new https.Agent({
-                rejectUnauthorized: false
-            });
+
             const rankRes = await fetch(rankUrl, {
                 method: 'POST',
-                agent: httpsAgent
+                dispatcher: new Agent({
+                    connect: {
+                        rejectUnauthorized: false,
+                        secureOptions: crypto.constants.SSL_OP_LEGACY_SERVER_CONNECT
+                    }
+                })
             })
             const buffer = await rankRes.arrayBuffer();
             rankResultHTML = iconv.decode(Buffer.from(buffer), 'big5');
@@ -206,7 +209,6 @@ async function updateGroupsInfo() {
                 status: status,
             });
 
-
         });
         /*
             idField => {
@@ -232,7 +234,6 @@ async function updateGroupsInfo() {
             registered: registered,
             want: want
         });
-
 
     }
 

@@ -1,5 +1,4 @@
 import cheerio from 'cheerio';
-import fetch from 'node-fetch';
 import { Headers } from 'node-fetch';
 import { parseCookiesStr, updateTable } from './Utils.js';
 //Example 

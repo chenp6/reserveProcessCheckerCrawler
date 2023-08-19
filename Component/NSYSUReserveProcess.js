@@ -1,5 +1,5 @@
 import cheerio from 'cheerio';
-import fetch from 'node-fetch';
+
 import { Headers } from 'node-fetch';
 import { parseCookiesStr, updateTable, stringEncodeToBig5 } from './Utils.js';
 import iconv from 'iconv-lite';

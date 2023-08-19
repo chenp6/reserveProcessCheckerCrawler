@@ -1,6 +1,5 @@
 import cheerio from 'cheerio';
 import FormData from 'form-data';
-import fetch from 'node-fetch';
 import { updateTable } from './Utils.js';
 //Reference:https://mealiy62307.medium.com/node-js-node-js-%E7%88%AC%E8%9F%B2%E8%88%87-line-bot-b94356fcd59d
 
@@ -64,17 +63,38 @@ export async function updateGroupsInfo() {
         const examNo = groupList[0];
         const groupNo = groupList[1];
 
+
+        // const headers = new Headers();
+        // headers.append("Content-Type", " application/x-www-form-urlencoded");
+        // headers.append("X-Requested-With", " XMLHttpRequest");
+
         const formData = new FormData();
+        // const headers = new Headers();
+        // headers.append('Access-Control-Allow-Origin', '*');
+
         formData.append('exam_id', examNo);
         formData.append('group_no', groupNo);
-        const url = 'https://nbk.acad.ncku.edu.tw/netcheckin/index.php?c=quall_rwd&m=qu'
-        const res = await fetch(url, {
-            body: formData,
-            method: 'POST'
-        })
-        const resultHTML = await res.text();
-        const $ = cheerio.load(resultHTML);
 
+
+        const url = 'https://nbk.acad.ncku.edu.tw/netcheckin/index.php?c=quall_rwd&m=qu'
+
+
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("exam_id", examNo);
+        urlencoded.append("group_no", groupNo);
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        });
+
+        const resultHTML = await res.text();
+
+        const $ = cheerio.load(resultHTML);
 
         let registered = 0;
         let want = 0;
@@ -117,6 +137,7 @@ export async function updateGroupsInfo() {
              *      status:<status>
              * }
              */
+
             await updateTable("process", {
                 groupId: "NCKU_" + groupId,
                 userId: userId
@@ -142,6 +163,7 @@ export async function updateGroupsInfo() {
                 want: 0
             }
         */
+
         await updateTable("group", {
             school: "NCKU",
             examNo: examNo,

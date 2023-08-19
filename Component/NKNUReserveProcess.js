@@ -1,6 +1,5 @@
 import cheerio from 'cheerio';
 import FormData from 'form-data';
-import fetch from 'node-fetch';
 import { updateTable } from './Utils.js';
 import { newPage, NKNUPageManager, navigateToPage } from './PageManager.js';
 

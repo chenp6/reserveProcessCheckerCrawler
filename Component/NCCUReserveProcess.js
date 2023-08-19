@@ -1,5 +1,4 @@
 import cheerio from 'cheerio';
-import fetch from 'node-fetch';
 import { Headers } from 'node-fetch';
 import { updateTable } from './Utils.js';
 //Reference:https://mealiy62307.medium.com/node-js-node-js-%E7%88%AC%E8%9F%B2%E8%88%87-line-bot-b94356fcd59d
