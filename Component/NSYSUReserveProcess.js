@@ -127,6 +127,7 @@ async function updateGroupsInfo() {
              * }
              */
             await updateTable("process", {
+                year: "113",
                 groupId: "NSYSU_" + groupId,
                 userId: userId
             }, {
@@ -152,6 +153,7 @@ async function updateGroupsInfo() {
             }
         */
         await updateTable("group", {
+            year: "113",
             school: "NSYSU",
             examNo: idField[0],
             groupNo: groupNo

@@ -50,8 +50,8 @@ const CCURegisterInfo = {
 const CCURegisterInfo = {
     group: new Map(),
     exam: new Map([
-        // ["3", { link: ["ccuee_gp/Final-1","ccuee_gp/Final"], type: "112學年度碩士班甄試" }],
-        ["1", { link: ["ccuee_gs/Final1"], type: "112學年度碩士班招生考試" }]
+        // ["3", { link: ["ccuee_gp/Final-1","ccuee_gp/Final"], type: ""112"學年度碩士班甄試" }],
+        // ["1", { link: ["ccuee_gs/Final1"], type: ""112"學年度碩士班招生考試" }]
     ]),
 };
 
@@ -64,14 +64,12 @@ export async function init() {
     console.log("=== CCU done ===")
 }
 
-
 async function setGroupMap() {
     for (const [examNo, examInfo] of CCURegisterInfo.exam) {
         const url = `https://www026198.ccu.edu.tw/academic/query_reg/query_reg_${examNo}.php`;
         const res = await fetch(url, {
             method: 'GET'
         })
-
         CCURegisterInfo.exam.set("" + examNo, {
             cookies: parseCookiesStr(await res.headers.get('set-cookie'))
         })
@@ -106,6 +104,8 @@ async function updateGroupsInfo() {
         if (examNo == "3") {
             hasDash = "_";
         }
+
+
         //榜單網頁
         let rankUrl = `https://www.exam.ccu.edu.tw/${groupInfo.examLink[0]}/Name${hasDash}${deptNo}.html` //第一階錄取科系
         let rankRes = await fetch(rankUrl, {
@@ -138,6 +138,7 @@ async function updateGroupsInfo() {
          * 報到狀況網頁
          */
         const processUrl = `https://www026198.ccu.edu.tw/academic/query_reg/${groupInfo.link}`
+
         const headers = new Headers();
         headers.append("Cookie", CCURegisterInfo.exam.get(examNo).cookies);
         const processRes = await fetch(processUrl, {
@@ -194,6 +195,7 @@ async function updateGroupsInfo() {
              * }
              */
             await updateTable("process", {
+                year: "113",
                 groupId: "CCU_" + groupId,
                 userId: idList[index - 1]
             }, {
@@ -220,6 +222,7 @@ async function updateGroupsInfo() {
             }
         */
         await updateTable("group", {
+            year: "113",
             school: "CCU",
             examNo: examNo,
             groupNo: examKind + "_" + deptNo

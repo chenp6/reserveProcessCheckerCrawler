@@ -181,6 +181,7 @@ async function updateGroupsInfo() {
              * }
              */
             await updateTable("process", {
+                year: "113",
                 groupId: "NYCU_" + groupNo,
                 userId: userId
             }, {
@@ -206,6 +207,7 @@ async function updateGroupsInfo() {
         */
         const queries = groupNo.split('_');
         await updateTable("group", {
+            year: "113",
             school: "NYCU",
             examNo: queries[0],
             groupNo: queries[1]

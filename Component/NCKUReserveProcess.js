@@ -6,10 +6,10 @@ import { updateTable } from './Utils.js';
 
 const NCKURegisterInfo = {
     exam: new Map([
-        // ["1", { type: "碩士班甄試" }],
-        ["2", { type: "碩士班" }],
+        ["1", { type: "碩士班甄試" }],
+        // ["2", { type: "碩士班" }],
         ["O", { type: "博士班甄試" }],
-        ["H", { type: "寒假轉學甄試" }]
+        // ["H", { type: "寒假轉學甄試" }]
     ]),
     group: new Map()
 };
@@ -23,7 +23,7 @@ export async function init() {
 
 }
 async function setGroupMap() {
-    const url = 'https://nbk.acad.ncku.edu.tw/netcheckin/views/js/code1.js?1669878074'
+    const url = 'https://nbk.acad.ncku.edu.tw/netcheckin/views/js/code1.js?1700816055'; //1700816055每學期不同須更新
     const res = await fetch(url, {
         method: 'GET'
     })
@@ -33,12 +33,14 @@ async function setGroupMap() {
     for (let i = 2; i < resultArr.length; i++) {
         if (resultArr[i].includes("new Array();")) {
             continue;
-        } else if (resultArr[i].includes("A1['2']")) {
-            examNo = '2';
+        } else if (resultArr[i].includes("A1['1']")) {
+            examNo = '1';
+            // } else if (resultArr[i].includes("A1['2']")) {
+            //     examNo = '2';
         } else if (resultArr[i].includes("A1['O']")) {
             examNo = 'O';
-        } else if (resultArr[i].includes("A1['H']")) {
-            examNo = 'H';
+            // } else if (resultArr[i].includes("A1['H']")) { //寒假轉學甄試
+            // examNo = 'H';
         } else {
             continue;
         }
@@ -95,7 +97,6 @@ export async function updateGroupsInfo() {
         const resultHTML = await res.text();
 
         const $ = cheerio.load(resultHTML);
-
         let registered = 0;
         let want = 0;
         let currentReserve = "";
@@ -109,6 +110,11 @@ export async function updateGroupsInfo() {
 
             //td:eq(3)是抓取第四欄的文字 => 正備取
             const rank = $(element).find("td:eq(3)").text().trim();
+
+
+            // console.log(status);
+            // console.log(userId);
+            // console.log(rank);
 
             if (status == "完成報到") {
                 registered++;
@@ -124,6 +130,8 @@ export async function updateGroupsInfo() {
                 currentReserve = process;
             }
 
+
+
             /*
              idField => 
             {
@@ -138,7 +146,18 @@ export async function updateGroupsInfo() {
              * }
              */
 
+            //測試用
+            // console.log({
+            //     year: "113",
+            //     groupId: "NCKU_" + groupId,
+            //     userId: userId,
+            //     index: index,
+            //     rank: rank,
+            //     status: status
+            // })
+
             await updateTable("process", {
+                year: "113",
                 groupId: "NCKU_" + groupId,
                 userId: userId
             }, {
@@ -165,6 +184,7 @@ export async function updateGroupsInfo() {
         */
 
         await updateTable("group", {
+            year: "113",
             school: "NCKU",
             examNo: examNo,
             groupNo: groupNo
@@ -174,6 +194,18 @@ export async function updateGroupsInfo() {
             registered: registered,
             want: want
         });
+
+        //測試用
+        // console.log({
+        //     year: "113",
+        //     school: "NCKU",
+        //     examNo: examNo,
+        //     groupNo: groupNo,
+        //     name: groupInfo.name,
+        //     currentReserve: currentReserve,
+        //     registered: registered,
+        //     want: want
+        // })
     }
 
 

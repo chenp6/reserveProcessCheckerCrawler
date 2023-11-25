@@ -4,7 +4,6 @@ import { updateTable } from './Utils.js';
 //Reference:https://mealiy62307.medium.com/node-js-node-js-%E7%88%AC%E8%9F%B2%E8%88%87-line-bot-b94356fcd59d
 
 //凌晨02:00-06:30為系統備份時間
-
 const NCCURegisterInfo = {
     exam: new Map([
         // ["112,1", { type: "112碩班甄試" }],
@@ -142,6 +141,7 @@ async function updateGroupsInfo() {
              * }
              */
             await updateTable("process", {
+                year: "113",
                 groupId: "NCCU_" + groupId,
                 userId: userId
             }, {
@@ -167,6 +167,7 @@ async function updateGroupsInfo() {
             }
         */
         await updateTable("group", {
+            year: "113",
             school: "NCCU",
             examNo: examNo,
             groupNo: groupNo
