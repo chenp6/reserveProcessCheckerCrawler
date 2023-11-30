@@ -53,8 +53,8 @@ const NTURegisterInfo = {
 */
 const NTURegisterInfo = {
     exam: new Map([
-        // ["regchk/stu_query", { type: "112學年度碩士班甄試", isBig5: false,reservedColor:"#FFFF00" }],
-        ["regbchk/stu_query", { type: "112學年度碩士班(考試入學)", isBig5: true, reservedColor: "#00F7FA" }]
+        ["regchk/stu_query", { type: "113學年度碩士班甄試", isBig5: false, registeredColor: "#FFFF00" }],
+        // ["regbchk/stu_query", { type: "112學年度碩士班(考試入學)", isBig5: true, registeredColor: "#00F7FA" }]
     ]),
     group: new Map()
 };
@@ -68,6 +68,7 @@ export async function init() {
     console.log("=== NTU done ===")
 
 }
+init();
 
 
 async function setGroupMap() {
@@ -103,7 +104,7 @@ async function setGroupMap() {
             if (groupName == "") return;
             const idEndAt = getIndexofItemStart(groupName);
             const groupNo = groupName.substring(0, idEndAt);
-            NTURegisterInfo.group.set(examNo + "_" + groupNo, { examNo: examNo, groupNo: groupNo, name: groupName, isBig5: examInfo.isBig5, reservedColor: examInfo.reservedColor })
+            NTURegisterInfo.group.set(examNo + "_" + groupNo, { examNo: examNo, groupNo: groupNo, name: groupName, isBig5: examInfo.isBig5, registeredColor: examInfo.registeredColor })
         })
     }
 }
@@ -166,7 +167,7 @@ async function updateGroupsInfo() {
             const reserve = $(element).find("td:eq(5)").text().trim();
             let status = $(element).find(`td:eq(4)`).text().trim(); //全部放棄/未報到/已放棄/志願順位
             //td:eq(4)是抓取第五欄的文字 => 報到狀態 
-            if ($(element).attr("bgcolor") == groupInfo.reservedColor) { //已報到
+            if ($(element).attr("bgcolor") == groupInfo.registeredColor) { //已報到
                 status = "已報到";
             } else if (ps.includes("放棄")) { //已遞補且放棄
                 status = ps;
@@ -200,6 +201,16 @@ async function updateGroupsInfo() {
              *      status:<status>
              * }
              */
+
+            // console.log({
+            //     year: "113",
+            //     groupId: "NTU_" + groupId,
+            //     userId: userId,
+            //     index: index,
+            //     rank: rank,
+            //     status: status,
+            // });
+
             await updateTable("process", {
                 year: "113",
                 groupId: "NTU_" + groupId,
@@ -225,6 +236,17 @@ async function updateGroupsInfo() {
                 want: 0
             }
         */
+        // console.log({
+        //     year: "113",
+        //     school: "NTU",
+        //     examNo: groupInfo.examNo,
+        //     groupNo: groupInfo.groupNo,
+        //     name: groupInfo.name,
+        //     currentReserve: currentReserve,
+        //     registered: registered,
+        //     want: want
+        // });
+
         await updateTable("group", {
             year: "113",
             school: "NTU",
@@ -236,6 +258,8 @@ async function updateGroupsInfo() {
             registered: registered,
             want: want
         });
+
+
 
     }
 
