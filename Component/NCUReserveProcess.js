@@ -4,7 +4,8 @@ import { updateTable } from './Utils.js';
 /*
 【group table】
 idField => {
-    school:"NYCU",
+    year:<year>
+    school:"NCU",
     examNo:<examNo>
     groupNo:<groupNo>
 }
@@ -21,6 +22,7 @@ content =>
 
 idField => 
 {
+    year:<year>
     groupId:<groupId>,
     userId:<userId>
 }
@@ -48,9 +50,12 @@ const NCURegisterInfo = {
 */
 const NCURegisterInfo = {
     exam: new Map([
-        ["142", { type: "112學年度碩士班、博士班甄試入學招生" }],
-        ["143", { type: "112學年度碩士在職專班招生" }],
-        ["146", { type: "112學年度碩士班考試入學招生" }]
+        // ["142", { type: "112學年度碩士班、博士班甄試入學招生" }],
+        // ["143", { type: "112學年度碩士在職專班招生" }],
+        // ["146", { type: "112學年度碩士班考試入學招生" }]
+        // ["158", { type: "113學年度碩士班、博士班甄試入學招生" }],
+        ["159", { type: "113學年度碩士班考試入學招生" }],
+
     ]),
     group: new Map()
 };
@@ -138,7 +143,7 @@ async function updateGroupsInfo() {
         let currentReserve = "";
         $("table > tbody > tr").each(async(index, element) => {
 
-            if (index == 0) { //標題列
+            if (index == 0 || index == 1) { //標題列
                 return;
             }
 
@@ -180,6 +185,14 @@ async function updateGroupsInfo() {
              *      status:<status>
              * }
              */
+            // console.log({
+            //     year: "113",
+            //     groupId: "NCU_" + queries[0] + "_" + queries[1],
+            //     index: index - 1,
+            //     rank: rank,
+            //     status: status
+            // });
+
             await updateTable("process", {
                 year: "113",
                 groupId: "NCU_" + queries[0] + "_" + queries[1],
@@ -207,6 +220,18 @@ async function updateGroupsInfo() {
                 want: 0
             }
         */
+        // console.log({
+        //     year: "113",
+        //     school: "NCU",
+        //     examNo: queries[0],
+        //     groupNo: queries[1],
+        //     name: groupInfo.name,
+        //     currentReserve: currentReserve,
+        //     registered: registered,
+        //     want: want
+        // });
+
+
         await updateTable("group", {
             year: "113",
             school: "NCU",

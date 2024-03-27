@@ -6,9 +6,9 @@ import { updateTable } from './Utils.js';
 
 const NCKURegisterInfo = {
     exam: new Map([
-        ["1", { type: "碩士班甄試" }],
-        // ["2", { type: "碩士班" }],
-        ["O", { type: "博士班甄試" }],
+        // ["1", { type: "碩士班甄試" }],
+        ["2", { type: "碩士班" }],
+        // ["O", { type: "博士班甄試" }],
         // ["H", { type: "寒假轉學甄試" }]
     ]),
     group: new Map()
@@ -33,12 +33,12 @@ async function setGroupMap() {
     for (let i = 2; i < resultArr.length; i++) {
         if (resultArr[i].includes("new Array();")) {
             continue;
-        } else if (resultArr[i].includes("A1['1']")) {
-            examNo = '1';
-            // } else if (resultArr[i].includes("A1['2']")) {
-            //     examNo = '2';
-        } else if (resultArr[i].includes("A1['O']")) {
-            examNo = 'O';
+            // } else if (resultArr[i].includes("A1['1']")) {
+            //     examNo = '1';
+        } else if (resultArr[i].includes("A1['2']")) {
+            examNo = '2';
+            // } else if (resultArr[i].includes("A1['O']")) {
+            //     examNo = 'O';
             // } else if (resultArr[i].includes("A1['H']")) { //寒假轉學甄試
             // examNo = 'H';
         } else {
@@ -212,7 +212,7 @@ export async function updateGroupsInfo() {
     function updateReserveProcess(rank, status) {
         if (rank.includes("正取")) { //正取
             return "尚未有遞補名額";
-        } else if (status.includes("完成報到")) { //備取且已報到
+        } else if (status.includes("完成報到") || status.includes("待報到")) { //備取且已報到
             return rank;
         } else {
             return null;

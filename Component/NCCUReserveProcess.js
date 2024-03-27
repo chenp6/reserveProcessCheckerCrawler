@@ -6,9 +6,9 @@ import { updateTable } from './Utils.js';
 //凌晨02:00-06:30為系統備份時間
 const NCCURegisterInfo = {
     exam: new Map([
-        // ["112,1", { type: "112碩班甄試" }],
-        ["112,8", { type: "112博班甄試" }],
-        ["112,2", { type: "112碩士班(考試入學)" }]
+        ["113,1", { type: "113碩班甄試" }],
+        ["113,8", { type: "113博班甄試" }],
+        // ["112,2", { type: "112碩士班(考試入學)" }]
     ]),
     group: new Map()
 };
@@ -16,8 +16,8 @@ const NCCURegisterInfo = {
 //具有選考科目者
 const NCCUOtherRegisterInfo = {
     exam: new Map([
-        ["112,9", { code: "", type: "112僑生單招(個人自薦)" }],
-        ["112,C", { code: "", type: "112僑生單招(學校推薦)" }]
+        // ["112,9", { code: "", type: "112僑生單招(個人自薦)" }],
+        // ["112,C", { code: "", type: "112僑生單招(學校推薦)" }]
     ]),
     group: [],
     process: []
@@ -30,7 +30,7 @@ export async function init() {
     console.log("=== NCCU loading ===");
     await setGroupMap();
     await updateGroupsInfo()
-    await setOtherGroupsMap();
+        // await setOtherGroupsMap();
     console.log("=== NCCU done ===");
 }
 
@@ -140,6 +140,14 @@ async function updateGroupsInfo() {
              *      status:<status>
              * }
              */
+            // console.log({
+            //     year: "113",
+            //     groupId: "NCCU_" + groupId,
+            //     userId: userId,
+            //     index: index,
+            //     rank: rank,
+            //     status: status
+            // });
             await updateTable("process", {
                 year: "113",
                 groupId: "NCCU_" + groupId,
@@ -166,6 +174,16 @@ async function updateGroupsInfo() {
                 want: 0
             }
         */
+        // console.log({
+        //     year: "113",
+        //     school: "NCCU",
+        //     examNo: examNo,
+        //     groupNo: groupNo,
+        //     name: groupInfo.name,
+        //     currentReserve: currentReserve,
+        //     registered: registered,
+        //     want: want
+        // });
         await updateTable("group", {
             year: "113",
             school: "NCCU",
@@ -178,7 +196,6 @@ async function updateGroupsInfo() {
             want: want
         });
     }
-
 
     function updateReserveProcess(rank, status) {
         if (rank.includes("正取")) { //正取

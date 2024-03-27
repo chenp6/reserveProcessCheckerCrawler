@@ -53,8 +53,8 @@ const NTURegisterInfo = {
 */
 const NTURegisterInfo = {
     exam: new Map([
-        ["regchk/stu_query", { type: "113學年度碩士班甄試", isBig5: false, registeredColor: "#FFFF00" }],
-        // ["regbchk/stu_query", { type: "112學年度碩士班(考試入學)", isBig5: true, registeredColor: "#00F7FA" }]
+        // ["regchk/stu_query", { type: "113學年度碩士班甄試", isBig5: false, registeredColor: "#FFFF00" }],
+        ["regbchk/stu_query", { type: "113學年度碩士班(考試入學)", isBig5: true, registeredColor: "#00F7FA" }]
     ]),
     group: new Map()
 };
@@ -68,7 +68,6 @@ export async function init() {
     console.log("=== NTU done ===")
 
 }
-init();
 
 
 async function setGroupMap() {
