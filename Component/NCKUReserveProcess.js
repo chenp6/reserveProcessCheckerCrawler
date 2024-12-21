@@ -6,8 +6,8 @@ import { updateTable } from './Utils.js';
 
 const NCKURegisterInfo = {
     exam: new Map([
-        // ["1", { type: "碩士班甄試" }],
-        ["2", { type: "碩士班" }],
+         ["1", { type: "碩士班甄試" }],
+        //["2", { type: "碩士班" }],
         // ["O", { type: "博士班甄試" }],
         // ["H", { type: "寒假轉學甄試" }]
     ]),
@@ -23,7 +23,8 @@ export async function init() {
 
 }
 async function setGroupMap() {
-    const url = 'https://nbk.acad.ncku.edu.tw/netcheckin/views/js/code1.js?1700816055'; //1700816055每學期不同須更新
+    //1700816055每學期不同須更新
+    const url = 'https://nbk.acad.ncku.edu.tw/netcheckin/views/js/code1.js?1733520494'; 
     const res = await fetch(url, {
         method: 'GET'
     })
@@ -33,10 +34,10 @@ async function setGroupMap() {
     for (let i = 2; i < resultArr.length; i++) {
         if (resultArr[i].includes("new Array();")) {
             continue;
-            // } else if (resultArr[i].includes("A1['1']")) {
-            //     examNo = '1';
+        } else if (resultArr[i].includes("A1['1']")) {
+                examNo = '1';
         } else if (resultArr[i].includes("A1['2']")) {
-            examNo = '2';
+           // examNo = '2';
             // } else if (resultArr[i].includes("A1['O']")) {
             //     examNo = 'O';
             // } else if (resultArr[i].includes("A1['H']")) { //寒假轉學甄試
@@ -135,7 +136,7 @@ export async function updateGroupsInfo() {
             /*
              idField => 
             {
-                groupId:CCU_<groupId>,
+                groupId:CCU_<examNo>_<groupNo>,
                 userId:<userId>
             }
              *content =>
@@ -148,8 +149,8 @@ export async function updateGroupsInfo() {
 
             //測試用
             // console.log({
-            //     year: "113",
-            //     groupId: "NCKU_" + groupId,
+            //     year: "114",
+            // groupId: "NCKU_" + examNo+'_'+groupNo,
             //     userId: userId,
             //     index: index,
             //     rank: rank,
@@ -157,8 +158,8 @@ export async function updateGroupsInfo() {
             // })
 
             await updateTable("process", {
-                year: "113",
-                groupId: "NCKU_" + groupId,
+                year: "114",
+                groupId: "NCKU_" +examNo+'_'+groupNo,
                 userId: userId
             }, {
                 index: index,
@@ -184,7 +185,7 @@ export async function updateGroupsInfo() {
         */
 
         await updateTable("group", {
-            year: "113",
+            year: "114",
             school: "NCKU",
             examNo: examNo,
             groupNo: groupNo
@@ -197,7 +198,7 @@ export async function updateGroupsInfo() {
 
         //測試用
         // console.log({
-        //     year: "113",
+        //     year: "114",
         //     school: "NCKU",
         //     examNo: examNo,
         //     groupNo: groupNo,
