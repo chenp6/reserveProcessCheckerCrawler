@@ -7,6 +7,7 @@ import crypto from 'crypto';
 /*
 【group table】
 idField => {
+    year: <year>
     school:"NYCU",
     examNo:<examNo>
     groupNo:<groupNo>
@@ -24,7 +25,8 @@ content =>
 
 idField => 
 {
-    groupId:<groupId>,
+    year:<year>,
+    groupId:<examNo>_<groupNo>,
     userId:<userId>
 }
  *content =>
@@ -53,8 +55,8 @@ const NTURegisterInfo = {
 */
 const NTURegisterInfo = {
     exam: new Map([
-        // ["regchk/stu_query", { type: "113學年度碩士班甄試", isBig5: false, registeredColor: "#FFFF00" }],
-        ["regbchk/stu_query", { type: "113學年度碩士班(考試入學)", isBig5: true, registeredColor: "#00F7FA" }]
+        ["regchk/stu_query", { type: "114學年度碩士班甄試", isBig5: true, registeredColor: "#FFFF00" }],
+       // ["regbchk/stu_query", { type: "113學年度碩士班(考試入學)", isBig5: true, registeredColor: "#00F7FA" }]
     ]),
     group: new Map()
 };
@@ -190,7 +192,7 @@ async function updateGroupsInfo() {
             /*
             idField => 
             {
-                groupId:<groupId>,
+                groupId:<examNo>_<groupNo>,
                 userId:<userId>
             }
              *content =>
@@ -202,7 +204,7 @@ async function updateGroupsInfo() {
              */
 
             // console.log({
-            //     year: "113",
+            //     year: "114",
             //     groupId: "NTU_" + groupId,
             //     userId: userId,
             //     index: index,
@@ -211,14 +213,15 @@ async function updateGroupsInfo() {
             // });
 
             await updateTable("process", {
-                year: "113",
-                groupId: "NTU_" + groupId,
+                year: "114",
+                groupId: "NTU_" + groupInfo.examNo+'_'+groupInfo.groupNo,
                 userId: userId,
             }, {
                 index: index,
                 rank: rank,
                 status: status,
             });
+
 
         });
         /*
@@ -236,7 +239,7 @@ async function updateGroupsInfo() {
             }
         */
         // console.log({
-        //     year: "113",
+        //     year: "114",
         //     school: "NTU",
         //     examNo: groupInfo.examNo,
         //     groupNo: groupInfo.groupNo,
@@ -247,7 +250,7 @@ async function updateGroupsInfo() {
         // });
 
         await updateTable("group", {
-            year: "113",
+            year: "114",
             school: "NTU",
             examNo: groupInfo.examNo,
             groupNo: groupInfo.groupNo
@@ -257,7 +260,6 @@ async function updateGroupsInfo() {
             registered: registered,
             want: want
         });
-
 
 
     }
