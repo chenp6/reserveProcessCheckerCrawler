@@ -5,6 +5,7 @@ import { updateTable } from './Utils.js';
 /*
 【group table】
 idField => {
+    year: <year>
     school:"UST",
     examNo:<examNo>
     groupNo:<groupNo>
@@ -22,7 +23,8 @@ content =>
 
 idField => 
 {
-    groupId:<groupId>,
+    year:<year>,
+    groupId:<examNo>_<groupNo>,
     userId:<userId>
 }
  *content =>
@@ -38,7 +40,7 @@ idField =>
 
 const USTRegisterInfo = {
     exam: new Map([
-        ["8a0b5539-0bb9-4fdb-8a17-a2d75dd10299", { type: "112學年度碩士班考試" }]
+        ["ab6e8d7a-9f7b-4e6c-91eb-31ebfd5c6e52", { type: "113學年度碩士班考試" }]
     ]),
     group: new Map()
 };
@@ -150,7 +152,7 @@ async function updateGroupsInfo() {
             /*
             idField => 
             {
-                groupId:<groupId>,
+                groupId:<examNo>_<groupNo>,
                 userId:<userId>
             }
              *content =>
@@ -160,15 +162,25 @@ async function updateGroupsInfo() {
              *      status:<status>
              * }
              */
-            // await updateTable("process", {
-            //     year: "112",
+
+            // console.log({
+            //     year: "113",
             //     groupId: "UST_" + groupNo,
-            //     userId: userId
-            // }, {
+            //     userId: userId,
             //     index: index,
             //     rank: rank,
             //     status: status
             // });
+
+            await updateTable("process", {
+                year: "113",
+                groupId: "UST_" +queries[0]+'_' +queries[1],
+                userId: userId
+            }, {
+                index: index,
+                rank: rank,
+                status: status
+            });
 
         });
         /*
@@ -187,7 +199,7 @@ async function updateGroupsInfo() {
         */
         const queries = groupNo.split('_');
         // console.log({
-        //     year: "112",
+        //     year: "113",
         //     school: "UST",
         //     examNo: queries[0],
         //     groupNo: queries[1],
@@ -199,7 +211,7 @@ async function updateGroupsInfo() {
 
 
         await updateTable("group", {
-            year: "112",
+            year: "113",
             school: "UST",
             examNo: queries[0],
             groupNo: queries[1]
