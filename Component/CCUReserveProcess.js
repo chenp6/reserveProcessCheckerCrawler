@@ -6,6 +6,7 @@ import { parseCookiesStr, updateTable } from './Utils.js';
 【group table】
 
 idField => {
+    year: <year>
     school:"CCU",
     examNo:<examNo>
     groupNo:<groupNo>
@@ -24,7 +25,8 @@ content =>
 
  idField => 
 {
-    groupId:CCU_<groupId>,
+    year:<year>,
+    groupId:CCU_<examNo>_<groupNo>,
     userId:<userId>
 }
  *content =>
@@ -50,8 +52,10 @@ const CCURegisterInfo = {
 const CCURegisterInfo = {
     group: new Map(),
     exam: new Map([
-        // ["3", { link: ["ccuee_gp/Final-1","ccuee_gp/Final"], type: ""112"學年度碩士班甄試" }],
-        // ["1", { link: ["ccuee_gs/Final1"], type: ""112"學年度碩士班招生考試" }]
+        //["3", { link: ["ccuee_gp/Final-1","ccuee_gp/Final"], type: "112學年度碩士班甄試" }],
+        ["3", { link: ["var/file/32/1032/img/1926","var/file/32/1032/img/1927"], type: "114學年度碩士班甄試" }],
+        
+        // ["1", { link: ["ccuee_gs/Final1"], type: "113學年度碩士班招生考試" }]
     ]),
 };
 
@@ -100,22 +104,26 @@ async function updateGroupsInfo() {
     for (const [groupId, groupInfo] of CCURegisterInfo.group) {
         const [examNo, examKind, deptNo] = groupId.split('_');
 
-        let hasDash = "";
+        let hasUnderLine = "";
         if (examNo == "3") {
-            hasDash = "_";
+            hasUnderLine = "_";
         }
-
+        
 
         //榜單網頁
-        let rankUrl = `https://www.exam.ccu.edu.tw/${groupInfo.examLink[0]}/Name${hasDash}${deptNo}.html` //第一階錄取科系
+        //112 let rankUrl = `https://www.exam.ccu.edu.tw/${groupInfo.examLink[0]}/Name${hasUnderLine}${deptNo}.html` //第一階錄取科系
+        let rankUrl = `https://exams.ccu.edu.tw/${groupInfo.examLink[0]}/Name${hasUnderLine}${deptNo}.html` //第一階錄取科系
+        
         let rankRes = await fetch(rankUrl, {
             method: 'GET'
         })
 
         if (rankRes.status != 200) { //第二階錄取科系
             if (groupInfo.examLink.length > 1) {
-                rankUrl = `https://www.exam.ccu.edu.tw/${groupInfo.examLink[1]}/Name${hasDash}${deptNo}.html`
-                rankRes = await fetch(rankUrl, {
+              // 112 rankUrl = `https://www.exam.ccu.edu.tw/${groupInfo.examLink[1]}/Name${hasUnderLine}${deptNo}.html`
+              rankUrl = `https://exams.ccu.edu.tw/${groupInfo.examLink[1]}/Name${hasUnderLine}${deptNo}.html`
+                
+              rankRes = await fetch(rankUrl, {
                     method: 'GET',
                 })
             } else {
@@ -126,13 +134,34 @@ async function updateGroupsInfo() {
         const $ = cheerio.load(rankResultHTML);
 
         const idList = [];
-        $("table > tbody > tr > td").each((index, element) => {
+        let want = 0;
+
+
+
+        //第一個table:正取table
+        $("table:eq(0) > tbody > tr > td").each((index, element) => {
             const id = $(element).text().trim();
-            if (index % 2 == 0 && id != '') {
-                idList.push(id);
+            if(examNo=='3'){
+                if (index % 2 == 0 && id != '') {
+                    idList.push(id);
+                }
+            }else if(examNo=='1'){
+                idList.push(id.split(' ')[0]);
             }
         })
+        want = idList.length;
 
+        //第二個table:備取table
+        $("table:eq(1) > tbody > tr > td").each((index, element) => {
+            const id = $(element).text().trim();
+            if(examNo=='3'){
+                if (index % 2 == 0 && id != '') {
+                    idList.push(id);
+                }
+            }else if(examNo=='1'){
+                idList.push(id.split(' ')[0]);
+            }
+        })
 
         /**
          * 報到狀況網頁
@@ -150,27 +179,35 @@ async function updateGroupsInfo() {
 
 
         let registered = 0;
-        let want = 0;
         let currentReserve = "";
         $$("body > table > tbody > tr").each(async(index, element) => {
             if (index == 0) {
                 return;
             }
+            let idIndex = 0;
 
             //正備取
-            const rankType = $(element).find(`td:eq(1)`).text().trim();
+            const rankType = $$(element).find(`td:eq(1)`).text().trim();
 
             //(正備取)名次
-            const rankNo = $(element).find(`td:eq(2)`).text().trim();
+            const rankNo = $$(element).find(`td:eq(2)`).text().trim();
+
 
             //排名:正備取+名次
             const rank = rankType + rankNo;
 
+            
+
             if (rankType == "正取") {
-                want++;
+                //if(idIndex == parseInt(rankNo)){
+                idIndex=parseInt(rankNo);
+                //}
+            }else if(rankType == "備取"){
+                idIndex = parseInt(rankNo)+want; 
             }
 
-            const status = $(element).find(`td:eq(3)`).text().trim();
+
+            const status = $$(element).find(`td:eq(3)`).text().trim();
             if (status == "完成報到") {
                 registered++;
             }
@@ -184,7 +221,7 @@ async function updateGroupsInfo() {
             /*
              idField => 
             {
-                groupId:CCU_<groupId>,
+                groupId:CCU_<examNo>_<groupNo>,
                 userId:<userId>
             }
              *content =>
@@ -193,16 +230,27 @@ async function updateGroupsInfo() {
              *      rank:<rank>,
              *      status:<status>
              * }
-             */
+             */           
             await updateTable("process", {
-                year: "113",
-                groupId: "CCU_" + groupId,
-                userId: idList[index - 1]
+                year: "114",
+                groupId: "CCU_" + examNo+'_'+examKind + "_" + deptNo,
+                userId: idList[idIndex - 1]
             }, {
                 index: index,
                 rank: rank,
                 status: status
             });
+
+            // console.log(
+            //     {
+            //         year: "114",
+            //         groupId: "CCU_" + groupId,
+            //         userId: idList[idIndex - 1],
+            //         index: index,
+            //         rank: rank,
+            //         status: status
+            //     }
+            // )
 
 
         })
@@ -221,8 +269,20 @@ async function updateGroupsInfo() {
                 want: 0
             }
         */
+
+        // console.log({
+        //     year: "114",
+        //     school: "CCU",
+        //     examNo: examNo,
+        //     groupNo: examKind + "_" + deptNo,
+        //     name: groupInfo.name,
+        //     currentReserve: currentReserve,
+        //     registered: registered,
+        //     want: want
+        // });
+
         await updateTable("group", {
-            year: "113",
+            year: "114",
             school: "CCU",
             examNo: examNo,
             groupNo: examKind + "_" + deptNo
