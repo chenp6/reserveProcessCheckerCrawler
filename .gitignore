@@ -8,3 +8,4 @@ index_test.js
 startCrawler.bat
 package-lock.json
 UncompleteComponent
+*.pdf
