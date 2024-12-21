@@ -5,6 +5,7 @@ import { updateTable } from './Utils.js';
 /*
 【group table】
 idField => {
+    year: <year>
     school:"NYCU",
     examNo:<examNo>
     groupNo:<groupNo>
@@ -22,7 +23,8 @@ content =>
 
 idField => 
 {
-    groupId:<groupId>,
+    year:<year>,
+    groupId:<examNo>_<groupNo>,
     userId:<userId>
 }
  *content =>
@@ -170,7 +172,7 @@ async function updateGroupsInfo() {
             /*
             idField => 
             {
-                groupId:<groupId>,
+                groupId:<examNo>_<groupNo>,
                 userId:<userId>
             }
              *content =>
@@ -179,10 +181,10 @@ async function updateGroupsInfo() {
              *      rank:<rank>,
              *      status:<status>
              * }
-             */
+             */    
             await updateTable("process", {
                 year: "113",
-                groupId: "NYCU_" + groupNo,
+                groupId: "NYCU_" + queries[0]+"_"+queries[1],
                 userId: userId
             }, {
                 index: index,
