@@ -22,8 +22,9 @@ content =>
 
 idField => 
 {
+    year:<year>,
     year:<year>
-    groupId:<groupId>,
+    groupId:<examNo>_<groupNo>,
     userId:<userId>
 }
  *content =>
@@ -54,7 +55,8 @@ const NCURegisterInfo = {
         // ["143", { type: "112學年度碩士在職專班招生" }],
         // ["146", { type: "112學年度碩士班考試入學招生" }]
         // ["158", { type: "113學年度碩士班、博士班甄試入學招生" }],
-        ["159", { type: "113學年度碩士班考試入學招生" }],
+        // ["159", { type: "113學年度碩士班考試入學招生" }],
+        ["173", { type: "114學年度碩士班、博士班甄試入學招生" }],
 
     ]),
     group: new Map()
@@ -105,7 +107,7 @@ async function setGroupMap() {
             if (groupId == undefined) {
                 return;
             } else {
-                groupId = groupId.split("=")[1];
+                groupId = groupId.split("?")[1];
             }
 
             //td:eq(1)是抓取第二欄的文字 => 組別名稱
@@ -130,8 +132,13 @@ async function updateGroupsInfo() {
         // ['good', 'luck_buddy', ''] // ignore the third element
 
         const queries = groupId.split(/I(.*)/s);
+        let examQuery = queries[0].split('=')[1];
+        let groupQuery = queries[1].split('&')[0];
 
-        const rankUrl = `https://cis.ncu.edu.tw/ExamRegister/checkin_detail?d=${groupId}`
+        //https://cis.ncu.edu.tw/ExamRegister/checkin_detail?code=173I999I1I3202I6&d=01385756
+        //&d=後面這邊隨著更新會一直變動 不需要設到id中 groupid只要173I999I1I3202I6即可
+        //也就是 code={examQuery}{groupQuery}
+        const rankUrl = `https://cis.ncu.edu.tw/ExamRegister/checkin_detail?code=${examQuery}I${groupQuery}`
         const rankRes = await fetch(rankUrl, {
             method: 'GET'
         })
@@ -175,7 +182,7 @@ async function updateGroupsInfo() {
             /*
             idField => 
             {
-                groupId:<groupId>,
+                groupId:<examNo>_<groupNo>,
                 userId:<userId>
             }
              *content =>
@@ -186,16 +193,17 @@ async function updateGroupsInfo() {
              * }
              */
             // console.log({
-            //     year: "113",
-            //     groupId: "NCU_" + queries[0] + "_" + queries[1],
-            //     index: index - 1,
+            //     year: "114",
+            //     groupId: "NCU_" + examQuery + "_" + groupQuery,
+            //     userId: userId,
+            //     index: index,
             //     rank: rank,
             //     status: status
             // });
 
             await updateTable("process", {
-                year: "113",
-                groupId: "NCU_" + queries[0] + "_" + queries[1],
+                year: "114",
+                groupId: "NCU_"+ examQuery + "_" + groupQuery,
                 userId: userId
             }, {
                 index: index,
@@ -221,10 +229,10 @@ async function updateGroupsInfo() {
             }
         */
         // console.log({
-        //     year: "113",
+        //     year: "114",
         //     school: "NCU",
-        //     examNo: queries[0],
-        //     groupNo: queries[1],
+        //     examNo: examQuery ,
+        //     groupNo:  groupQuery,
         //     name: groupInfo.name,
         //     currentReserve: currentReserve,
         //     registered: registered,
@@ -233,16 +241,17 @@ async function updateGroupsInfo() {
 
 
         await updateTable("group", {
-            year: "113",
+            year: "114",
             school: "NCU",
-            examNo: queries[0],
-            groupNo: queries[1]
+            examNo: examQuery ,
+            groupNo:  groupQuery
         }, {
             name: groupInfo.name,
             currentReserve: currentReserve,
             registered: registered,
             want: want
         });
+    
     }
 
     /**
