@@ -8,7 +8,8 @@ import iconv from 'iconv-lite';
 
 const NSYSURegisterInfo = {
     exam: new Map([
-        ["112,41", { type: "112學年度考試入學" }]
+        //["113,41", { type: "113學年度考試入學" }],
+         ["114,11", { type: "114學年度碩士班甄試入學" }]
     ]),
     group: new Map()
 };
@@ -17,28 +18,47 @@ let cookiesHeader = "";
 
 export async function init() {
     console.log("=== NSYSU loading ===")
-    await setCookiesHeader();
+    await setHomepageCookiesHeader();
     await setGroupMap();
     await updateGroupsInfo();
     console.log("=== NSYSU done ===")
 
 }
-
-
-async function setCookiesHeader() {
-    const url = `https://exam2-acad.nsysu.edu.tw/stunew_query/stunew_qry.asp`;
-
+async function setHomepageCookiesHeader() {
+    const url = `https://exam2-acad.nsysu.edu.tw/stunew_query/stunew_qry_step1.asp`;
     const res = await fetch(url, {
         method: 'GET',
     });
     cookiesHeader = parseCookiesStr(await res.headers.get('set-cookie'));
+    console.log(cookiesHeader)
+
 }
 async function setGroupMap() {
     for (const examNo of NSYSURegisterInfo.exam.keys()) {
         const info = examNo.split(",");
-        const url = `https://exam2-acad.nsysu.edu.tw/stunew_query/stunew_top.asp?examno=${info[1]}&YR=${info[0]}`;
+
+
+        const url_qry = `https://exam2-acad.nsysu.edu.tw/stunew_query/stunew_qry.asp`;
+        const urlencoded = new URLSearchParams();
+        urlencoded.append("exam_list", "11");
+        urlencoded.append("YR", "114");
+        const res_qry = await fetch(url_qry,
+            {
+                "headers": {
+                    "Cookie": cookiesHeader
+                },
+                "body": urlencoded,
+                "method": "POST",
+        });
+        // console.log(await res_qry.text())
+        // console.log(res_qry);
+        //cookiesHeader = parseCookiesStr(await res_qry.headers.get('set-cookie'));
+
         const headers = new Headers();
         headers.append("Cookie", cookiesHeader);
+
+        const url = `https://exam2-acad.nsysu.edu.tw/stunew_query/stunew_top.asp`;
+
         const res = await fetch(url, {
             method: 'GET',
             headers: headers
@@ -46,7 +66,6 @@ async function setGroupMap() {
 
         const resultHTML = await res.text();
         const $ = cheerio.load(resultHTML);
-
         $("select option").each(async(index, element) => {
             if (index == 0) return;
             const groupField = $(element).val();
@@ -60,11 +79,11 @@ async function setGroupMap() {
 
 async function updateGroupsInfo() {
     for (const [groupId, groupInfo] of NSYSURegisterInfo.group) {
-        const idField = groupId.split("_");
-        const examField = idField[0].split(",");
+        const groupIdField = groupId.split("_");
+        const examField = groupIdField[0].split(",");
         const year = examField[0];
         const examNo = examField[1];
-        const groupNo = idField[1];
+        const groupNo = groupIdField[1];
         const res = await fetch("https://exam2-acad.nsysu.edu.tw/stunew_query/stunew_result.asp", {
             "headers": {
                 "Content-Type": "application/x-www-form-urlencoded",
@@ -84,27 +103,27 @@ async function updateGroupsInfo() {
         $("body > form > center > table > tbody > tr:nth-child(3) > td > table > tbody > tr").each(async(index, element) => {
             if (index == 0) return;
             //td:eq(6)是抓取第七欄的文字 => 報到狀況
-            const status = $(element).find("td:eq(6)").text().trim();
+            const status = $(element).find("td:eq(5)").text().trim();
 
             //td:eq(1)是抓取第二欄的文字 => 准考證號
             const userId = $(element).find("td:eq(1)").text().trim();
 
             let rank = "";
 
-            //td:eq(3)是抓取第四欄的文字 => 身分別
-            const identity = $(element).find("td:eq(3)").text().trim();
+            //td:eq(2)是抓取第三欄的文字 => 身分別
+            const identity = $(element).find("td:eq(2)").text().trim();
             if (identity == "甄試生") {
                 rank = identity;
             } else {
-                //td:eq(4+5)是抓取第五六欄的文字 => 正備取
-                rank = $(element).find("td:eq(4)").text().trim() + $(element).find("td:eq(5)").text().trim();
+                //td:eq(3)是抓取第四欄的文字 => 正備取
+                rank = $(element).find("td:eq(3)").text().trim() + $(element).find("td:eq(4)").text().trim();
             }
 
-            if (status == "已報到") {
+            if (status == "已報到" && identity !== "甄試生") {
                 registered++;
             }
 
-            if (rank == "正取" || identity == "甄試生") {
+            if (rank == "正取") { // || identity == "甄試生"
                 want++;
             }
 
@@ -116,7 +135,7 @@ async function updateGroupsInfo() {
             /*
              idField => 
             {
-                groupId:CCU_<groupId>,
+                groupId:NSYSU_<examNo>_<groupNo>,
                 userId:<userId>
             }
              *content =>
@@ -126,9 +145,19 @@ async function updateGroupsInfo() {
              *      status:<status>
              * }
              */
+            // console.log({
+            //     year: "114",
+            //     groupId: "NSYSU_" + groupIdField[0]+'_'+groupNo,
+            //     userId: userId,
+            //     index: index,
+            //     rank: rank,
+            //     status: status
+            // });
+
+
             await updateTable("process", {
-                year: "113",
-                groupId: "NSYSU_" + groupId,
+                year: "114",
+                groupId: "NSYSU_" + groupIdField[0]+'_'+groupNo,
                 userId: userId
             }, {
                 index: index,
@@ -140,7 +169,7 @@ async function updateGroupsInfo() {
 
         /*
             idField => {
-                school:"CCU",
+                school:"NSYSU_",
                 examNo:<examNo>
                 groupNo:<groupNo>
             }
@@ -152,10 +181,21 @@ async function updateGroupsInfo() {
                 want: 0
             }
         */
+        // console.log({
+        //     year: "114",
+        //     school: "NSYSU",
+        //     examNo: idField[0],
+        //     groupNo: groupNo,
+        //     name: groupInfo.name,
+        //     currentReserve: currentReserve,
+        //     registered: registered,
+        //     want: want
+        // });
+
         await updateTable("group", {
-            year: "113",
+            year: "114",
             school: "NSYSU",
-            examNo: idField[0],
+            examNo: groupIdField[0],
             groupNo: groupNo
         }, {
             name: groupInfo.name,
