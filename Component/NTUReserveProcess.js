@@ -1,5 +1,5 @@
 import cheerio from 'cheerio';
-import { updateTable, stringEncodeToBig5 } from './Utils.js';
+import { updateTable, stringEncodeToBig5,getAcademicYear } from './Utils.js';
 import iconv from 'iconv-lite';
 import { Agent } from "undici"
 import crypto from 'crypto';
@@ -53,10 +53,11 @@ const NTURegisterInfo = {
 
 };
 */
+const testAcademicYear = getAcademicYear()
 const NTURegisterInfo = {
     exam: new Map([
-        ["regchk/stu_query", { type: "114學年度碩士班甄試", isBig5: true, registeredColor: "#FFFF00" }],
-       // ["regbchk/stu_query", { type: "113學年度碩士班(考試入學)", isBig5: true, registeredColor: "#00F7FA" }]
+        ["regchk/stu_query", { type: testAcademicYear+"學年度碩士班甄試", isBig5: true, registeredColor: "#FFFF00" }],
+    //    ["regbchk/stu_query", { type: currentYear+"學年度碩士班(考試入學)", isBig5: true, registeredColor: "#00F7FA" }]
     ]),
     group: new Map()
 };
@@ -176,9 +177,6 @@ async function updateGroupsInfo() {
                 status = reserve;
             }
 
-
-
-
             if (status == "已報到") {
                 registered++;
             }
@@ -204,7 +202,7 @@ async function updateGroupsInfo() {
              */
 
             // console.log({
-            //     year: "114",
+            //     year: testAcademicYear,
             //     groupId: "NTU_" + groupId,
             //     userId: userId,
             //     index: index,
@@ -213,7 +211,7 @@ async function updateGroupsInfo() {
             // });
 
             await updateTable("process", {
-                year: "114",
+                year: testAcademicYear,
                 groupId: "NTU_" + groupInfo.examNo+'_'+groupInfo.groupNo,
                 userId: userId,
             }, {
@@ -239,7 +237,7 @@ async function updateGroupsInfo() {
             }
         */
         // console.log({
-        //     year: "114",
+        //     year: testAcademicYear,
         //     school: "NTU",
         //     examNo: groupInfo.examNo,
         //     groupNo: groupInfo.groupNo,
@@ -250,7 +248,7 @@ async function updateGroupsInfo() {
         // });
 
         await updateTable("group", {
-            year: "114",
+            year: testAcademicYear,
             school: "NTU",
             examNo: groupInfo.examNo,
             groupNo: groupInfo.groupNo

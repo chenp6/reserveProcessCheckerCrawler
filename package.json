@@ -32,5 +32,8 @@
     "bugs": {
         "url": "https://github.com/chenp6/reserveProcessCheckerCrawler/issues"
     },
-    "homepage": "https://github.com/chenp6/reserveProcessCheckerCrawler#readme"
+    "homepage": "https://github.com/chenp6/reserveProcessCheckerCrawler#readme",
+    "devDependencies": {
+        "jest": "^30.1.3"
+    }
 }

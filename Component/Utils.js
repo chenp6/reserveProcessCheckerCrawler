@@ -33,6 +33,7 @@ export function parseCookiesArray(cookies) {
  */
 export function parseCookiesStr(cookies) {
     return parseCookiesArray(cookies).join(' ');;
+    return parseCookiesArray(cookies).join(' ');
 }
 
 export async function updateTable(tableName, idField, content) {
@@ -90,4 +91,27 @@ export function stringEncodeToBig5(str) {
         }
     }
     return newStr;
+}
+
+
+/**
+ * 取得考試學年度(為當下學年度+1)
+ * @returns 
+ */
+export function getAcademicYear(){
+
+
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear()-1911;
+    const currentMonth = currentDate.getMonth()+1;
+    let year;
+    if(currentMonth>10){
+        year = currentYear+1;
+        year = year.toString();
+    }
+    else{
+        year = currentYear.toString();
+    }
+
+    return year;
 }

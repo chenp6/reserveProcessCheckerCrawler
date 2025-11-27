@@ -1,5 +1,5 @@
 import { MongoClient } from "mongodb";
-import { connectionMap, setConnections, updateTable, updateUpdateTime, getAllObjects } from "./Component/Utils.js";
+import { connectionMap, setConnections, updateTable, updateUpdateTime, getAllObjects,getAcademicYear } from "./Component/Utils.js";
 import * as CCU from './Component/CCUReserveProcess.js';
 //import * as NYCU from './Component/NYCUReserveProcess.js';
 import * as NCKU from './Component/NCKUReserveProcess.js';
@@ -29,14 +29,18 @@ async function run() {
     console.log(new Date() + "開始更新各校系組資料")
 
     await setConnections(db);
-
-    await CCU.init();
-    // await NYCU.init();
     await NCKU.init();
-    await NCU.init();
-    await NCCU.init();
     await NTU.init();
-    await NSYSU.init();
+
+
+    // await NCU.init();
+    // await NSYSU.init();
+
+
+
+    // await CCU.init();
+    // await NYCU.init();
+    // await NCCU.init();
     //await UST.init();
 
 
@@ -54,15 +58,30 @@ async function run() {
 run().catch(console.dir);
 
 async function updateExams() {
-    const year = "114";
-    await updateCCUExams();
-    // await updateNYCUExams();
+
+    let year = getAcademicYear();
     await updateNCKUExams();
-    await updateNCUExams();
-    await updateNCCUExams();
-    // await updateNKUSTExams();
     await updateNTUExams();
-    await updateNSYSUExams();
+
+
+
+    // await updateNSYSUExams();
+    // await updateNCUExams();
+    
+
+
+
+    // await updateCCUExams();
+    // await updateNYCUExams();
+
+
+
+
+
+    
+    // await updateNCCUExams();
+    // await updateNKUSTExams();
+
     //await updateUSTExams();
 
     async function updateCCUExams() {
@@ -109,18 +128,20 @@ async function updateExams() {
 
 
     async function updateNCKUExams() {
-
-        // await updateTable("exam", { school: "NCKU", examNo: '1', year: year }, { name: year+"碩士班甄試" });
-         await updateUpdateTime("NCKU", "1", year);
-
+        const currentDate = new Date();
+        const expireDate1 = new Date("2026-01-21 23:59:59");
+        if(currentDate <= expireDate1){
+            // await updateTable("exam", { school: "NCKU", examNo: '1', year: year }, { name: year+"碩士班甄試" });
+            await updateUpdateTime("NCKU", "1", year);
+        }
         // await updateTable("exam", { school: "NCKU", examNo: 'O', year: year }, { name: year+"博士班甄試" });
         // await updateUpdateTime("NCKU", "O", year);
 
         // await updateTable("exam", { school: "NCKU", examNo: 'H' }, { name: "寒假轉學甄試" });
         // await updateUpdateTime("NCKU", "H", year);
 
-        // await updateTable("exam", { school: "NCKU", examNo: '2', year: year }, { name: "113碩士班(考試入學)" });
-        //await updateUpdateTime("NCKU", "2", year);
+        // await updateTable("exam", { school: "NCKU", examNo: '2', year: year }, { name: year+"碩士班(考試入學)" });
+        // await updateUpdateTime("NCKU", "2", year);
     }
 
     async function updateNCUExams() {
@@ -140,19 +161,22 @@ async function updateExams() {
         //await updateUpdateTime("NCU", "159", year);
 
         // await updateTable("exam", { school: "NCU", examNo: '173', year: year }, { name: "114學年度碩士班、博士班甄試入學招生" });
-        await updateUpdateTime("NCU", "173", year);
+        // await updateUpdateTime("NCU", "173", year);
+
+        // await updateTable("exam", { school: "NCU", examNo: '174', year: year }, { name: "114學年度碩士班考試入學招生" });
+        await updateUpdateTime("NCU", "174", year);
 
     }
 
     async function updateNCCUExams() {
         // await updateTable("exam", { school: "NCCU", examNo: year+',1', year: year }, { name: year+"碩班甄試" });
-        await updateUpdateTime("NCCU", year+",1", year);
+        // await updateUpdateTime("NCCU", year+",1", year);
 
         // await updateTable("exam", { school: "NCCU", examNo: year+',8', year: year }, { name: year+"博班甄試" });
-        await updateUpdateTime("NCCU", year+",8", year);
+        // await updateUpdateTime("NCCU", year+",8", year);
 
-        // await updateTable("exam", { school: "NCCU", examNo: year+',2' , year: year}, { name: year+"碩士班(考試入學)" });
-        // await updateUpdateTime("NCCU", year, year+",2", year);
+        await updateTable("exam", { school: "NCCU", examNo: year+',2' , year: year}, { name: year+"碩士班(考試入學)" });
+        await updateUpdateTime("NCCU", year, year+",2", year);
 
     }
 
@@ -171,19 +195,24 @@ async function updateExams() {
     }
 
     async function updateNTUExams() {
-       // await updateTable("exam", { school: "NTU", examNo: 'regchk/stu_query', year: year }, { name: year+"學年度碩士班甄試" });
-        await updateUpdateTime("NTU", "regchk/stu_query", year);
+
+        const currentDate = new Date();
+        const expireDate1 = new Date("2026-01-22 23:59:59");
+        if(currentDate <= expireDate1){
+            // await updateTable("exam", { school: "NTU", examNo: 'regchk/stu_query', year: year }, { name: year+"學年度碩士班甄試" });
+            await updateUpdateTime("NTU", "regchk/stu_query", year);
+        }
 
         // await updateTable("exam", { school: "NTU", examNo: 'regbchk/stu_query', year: year }, { name: year+"學年度碩士班一般考試" });
-        //await updateUpdateTime("NTU", "regbchk/stu_query", year);
+        // await updateUpdateTime("NTU", "regbchk/stu_query", year);
     }
 
     async function updateNSYSUExams() {
-        // await updateTable("exam", { school: "NSYSU", examNo: '113,41', year: year }, { name: year+"學年度考試入學" });
-        //await updateUpdateTime("NSYSU", year+',41', year);
+        // await updateTable("exam", { school: "NSYSU", examNo: year+',41', year: year }, { name: year+"學年度考試入學" });
+        await updateUpdateTime("NSYSU", year+',41', year);
 
-       // await updateTable("exam", { school: "NSYSU", examNo: '113,11', year: year }, { name: year+"學年度碩士班甄試入學" });
-        await updateUpdateTime("NSYSU", year+',11', year);
+       // await updateTable("exam", { school: "NSYSU", examNo: year+',11', year: year }, { name: year+"學年度碩士班甄試入學" });
+        // await updateUpdateTime("NSYSU", year+',11', year);
 
     }
 }
