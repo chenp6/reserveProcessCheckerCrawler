@@ -31,10 +31,10 @@ async function run() {
     await setConnections(db);
     await NCKU.init();
     await NTU.init();
+    await NSYSU.init();
+    await NCU.init();
 
 
-    // await NCU.init();
-    // await NSYSU.init();
 
 
 
@@ -62,12 +62,8 @@ async function updateExams() {
     let year = getAcademicYear();
     await updateNCKUExams();
     await updateNTUExams();
-
-
-
-    // await updateNSYSUExams();
-    // await updateNCUExams();
-    
+    await updateNSYSUExams();
+    await updateNCUExams();
 
 
 
@@ -164,7 +160,10 @@ async function updateExams() {
         // await updateUpdateTime("NCU", "173", year);
 
         // await updateTable("exam", { school: "NCU", examNo: '174', year: year }, { name: "114學年度碩士班考試入學招生" });
-        await updateUpdateTime("NCU", "174", year);
+        // await updateUpdateTime("NCU", "174", year);
+
+        // await updateTable("exam", { school: "NCU", examNo: '188', year: year }, { name: "115學年度碩士班、博士班甄試入學招生" });
+        await updateUpdateTime("NCU", "188", year);
 
     }
 
@@ -209,10 +208,10 @@ async function updateExams() {
 
     async function updateNSYSUExams() {
         // await updateTable("exam", { school: "NSYSU", examNo: year+',41', year: year }, { name: year+"學年度考試入學" });
-        await updateUpdateTime("NSYSU", year+',41', year);
+        // await updateUpdateTime("NSYSU", year+',41', year);
 
-       // await updateTable("exam", { school: "NSYSU", examNo: year+',11', year: year }, { name: year+"學年度碩士班甄試入學" });
-        // await updateUpdateTime("NSYSU", year+',11', year);
+    //    await updateTable("exam", { school: "NSYSU", examNo: year+',11', year: year }, { name: year+"學年度碩士班甄試入學" });
+        await updateUpdateTime("NSYSU", year+',11', year);
 
     }
 }

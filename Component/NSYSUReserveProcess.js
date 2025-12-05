@@ -1,15 +1,14 @@
 import cheerio from 'cheerio';
 
 import { Headers } from 'node-fetch';
-import { parseCookiesStr, updateTable, stringEncodeToBig5 } from './Utils.js';
+import { parseCookiesStr, updateTable, stringEncodeToBig5,getAcademicYear } from './Utils.js';
 import iconv from 'iconv-lite';
 //Reference:https://mealiy62307.medium.com/node-js-node-js-%E7%88%AC%E8%9F%B2%E8%88%87-line-bot-b94356fcd59d
-
-
+const currentAcademicYear =  getAcademicYear();
 const NSYSURegisterInfo = {
     exam: new Map([
-        //["113,41", { type: "113學年度考試入學" }],
-         ["114,11", { type: "114學年度碩士班甄試入學" }]
+        // [currentAcademicYear+",41", { type: currentAcademicYear+"學年度考試入學" }],
+         [currentAcademicYear+",11", { type: currentAcademicYear+"學年度碩士班甄試入學" }]
     ]),
     group: new Map()
 };
@@ -40,8 +39,8 @@ async function setGroupMap() {
 
         const url_qry = `https://exam2-acad.nsysu.edu.tw/stunew_query/stunew_qry.asp`;
         const urlencoded = new URLSearchParams();
-        urlencoded.append("exam_list", "11");
-        urlencoded.append("YR", "114");
+        urlencoded.append("exam_list", info[1]);
+        urlencoded.append("YR", info[0]);
         const res_qry = await fetch(url_qry,
             {
                 "headers": {
@@ -100,7 +99,24 @@ async function updateGroupsInfo() {
         let registered = 0;
         let want = 0;
         let currentReserve = "";
+
+
+
+        const header5 = $("body > form > center > table > tbody > tr:nth-child(3) > td > table > tbody > tr:nth-child(1)").find("td:eq(5)").text().trim();
+        const header1 = $("body > form > center > table > tbody > tr:nth-child(3) > td > table > tbody > tr:nth-child(1)").find("td:eq(1)").text().trim();
+        const header2 = $("body > form > center > table > tbody > tr:nth-child(3) > td > table > tbody > tr:nth-child(1)").find("td:eq(2)").text().trim();
+        const header3 = $("body > form > center > table > tbody > tr:nth-child(3) > td > table > tbody > tr:nth-child(1)").find("td:eq(3)").text().trim();
+        // console.log(header5);
+        // console.log(header1);
+        // console.log(header2);
+        // console.log(header3);
+        if (header5 !== "報到狀況" || header1 !== "應考證號碼" || header2!== "身份" || header3!== "正備取") {
+            console.log("表格欄位名稱錯誤，請確認後再執行！");
+            break;
+        }
+
         $("body > form > center > table > tbody > tr:nth-child(3) > td > table > tbody > tr").each(async(index, element) => {
+
             if (index == 0) return;
             //td:eq(6)是抓取第七欄的文字 => 報到狀況
             const status = $(element).find("td:eq(5)").text().trim();
@@ -146,7 +162,7 @@ async function updateGroupsInfo() {
              * }
              */
             // console.log({
-            //     year: "114",
+            //     year: currentAcademicYear,
             //     groupId: "NSYSU_" + groupIdField[0]+'_'+groupNo,
             //     userId: userId,
             //     index: index,
@@ -156,7 +172,7 @@ async function updateGroupsInfo() {
 
 
             await updateTable("process", {
-                year: "114",
+                year: currentAcademicYear,
                 groupId: "NSYSU_" + groupIdField[0]+'_'+groupNo,
                 userId: userId
             }, {
@@ -182,9 +198,9 @@ async function updateGroupsInfo() {
             }
         */
         // console.log({
-        //     year: "114",
+        //     year: currentAcademicYear,
         //     school: "NSYSU",
-        //     examNo: idField[0],
+        //     examNo: groupIdField[0],
         //     groupNo: groupNo,
         //     name: groupInfo.name,
         //     currentReserve: currentReserve,
@@ -193,7 +209,7 @@ async function updateGroupsInfo() {
         // });
 
         await updateTable("group", {
-            year: "114",
+            year: currentAcademicYear,
             school: "NSYSU",
             examNo: groupIdField[0],
             groupNo: groupNo

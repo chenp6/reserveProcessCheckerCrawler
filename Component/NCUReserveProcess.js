@@ -1,5 +1,5 @@
 import cheerio from 'cheerio';
-import { updateTable } from './Utils.js';
+import { updateTable,getAcademicYear } from './Utils.js';
 //Example 
 /*
 【group table】
@@ -49,6 +49,7 @@ const NCURegisterInfo = {
 
 };
 */
+const currentAcademicYear =  getAcademicYear();
 const NCURegisterInfo = {
     exam: new Map([
         // ["142", { type: "112學年度碩士班、博士班甄試入學招生" }],
@@ -56,8 +57,9 @@ const NCURegisterInfo = {
         // ["146", { type: "112學年度碩士班考試入學招生" }]
         // ["158", { type: "113學年度碩士班、博士班甄試入學招生" }],
         // ["159", { type: "113學年度碩士班考試入學招生" }],
-        ["173", { type: "114學年度碩士班、博士班甄試入學招生" }],
-
+        // ["173", { type: "114學年度碩士班、博士班甄試入學招生" }],
+        // ["174", { type: "114學年度碩士班考試入學招生" }],
+        ["188", { type: "115學年度碩士班、博士班甄試入學招生" }],
     ]),
     group: new Map()
 };
@@ -148,6 +150,15 @@ async function updateGroupsInfo() {
         let registered = 0;
         let want = 0;
         let currentReserve = "";
+        const header0 = $("#mainPanel > table > tbody > tr:nth-child(1)").find("th:eq(0)").text().trim();
+        const header1 = $("#mainPanel > table > tbody > tr:nth-child(1)").find("th:eq(1)").text().trim();
+        const header2 = $("#mainPanel > table > tbody > tr:nth-child(1)").find("th:eq(2)").text().trim();
+
+        if (header0 !== "准考證號碼" || header1 !== "正備取" || header2!== "報到狀態") {
+            console.log("表格欄位名稱錯誤，請確認後再執行！");
+            break;
+        }
+
         $("table > tbody > tr").each(async(index, element) => {
 
             if (index == 0 || index == 1) { //標題列
@@ -193,7 +204,7 @@ async function updateGroupsInfo() {
              * }
              */
             // console.log({
-            //     year: "114",
+            //     year: currentAcademicYear,
             //     groupId: "NCU_" + examQuery + "_" + groupQuery,
             //     userId: userId,
             //     index: index,
@@ -202,7 +213,7 @@ async function updateGroupsInfo() {
             // });
 
             await updateTable("process", {
-                year: "114",
+                year: currentAcademicYear,
                 groupId: "NCU_"+ examQuery + "_" + groupQuery,
                 userId: userId
             }, {
@@ -229,7 +240,7 @@ async function updateGroupsInfo() {
             }
         */
         // console.log({
-        //     year: "114",
+        //     year: currentAcademicYear,
         //     school: "NCU",
         //     examNo: examQuery ,
         //     groupNo:  groupQuery,
@@ -241,7 +252,7 @@ async function updateGroupsInfo() {
 
 
         await updateTable("group", {
-            year: "114",
+            year: currentAcademicYear,
             school: "NCU",
             examNo: examQuery ,
             groupNo:  groupQuery

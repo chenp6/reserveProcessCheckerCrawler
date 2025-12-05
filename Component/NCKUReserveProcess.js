@@ -110,7 +110,7 @@ export async function updateGroupsInfo() {
         const header3 = $("table thead tr th:eq(3)").text().trim();
         
         if (header0 !== "報到狀態" || header1 !== "准考證號" || header3 !== "正備取序") {
-            alert("表格欄位名稱錯誤，請確認後再執行！");
+            console.log("表格欄位名稱錯誤，請確認後再執行！");
         }else{
 
             $("table > tbody > tr").each(async(index, element) => {
