@@ -1,14 +1,14 @@
 import cheerio from 'cheerio';
 import { Headers } from 'node-fetch';
-import { updateTable } from './Utils.js';
+import { getAcademicYear, updateTable } from './Utils.js';
 //Reference:https://mealiy62307.medium.com/node-js-node-js-%E7%88%AC%E8%9F%B2%E8%88%87-line-bot-b94356fcd59d
-
+const currentYear = getAcademicYear() 
 //凌晨02:00-06:30為系統備份時間
 const NCCURegisterInfo = {
     exam: new Map([
-        ["114,1", { type: "114碩班甄試" }],
-        ["114,8", { type: "114博班甄試" }],
-        //["114,2", { type: "113碩士班(考試入學)" }]
+        [currentYear + ",1", { type: "115碩班甄試" }],
+        // ["113,8", { type: "113博班甄試" }],
+        // ["113,2", { type: "113碩士班(考試入學)" }]
     ]),
     group: new Map()
 };
@@ -42,6 +42,7 @@ async function setGroupMap() {
             const name = groupOpts[i].Text;
             NCCURegisterInfo.group.set(groupId, { name: name });
         }
+
     }
 }
 
@@ -62,6 +63,20 @@ async function updateGroupsInfo() {
         let registered = 0;
         let want = 0;
         let currentReserve = "";
+
+        const header0 = $("table tbody tr:eq(0) td:eq(0)").text().trim();
+        const header6 = $("table tbody tr:eq(0) td:eq(6)").text().trim();
+        const header5 = $("table tbody tr:eq(0) td:eq(5)").text().trim();
+        const header4 = $("table tbody tr:eq(0) td:eq(4)").text().trim();
+
+        if (header0 !== "准考證號碼" || header6 !== "放棄狀態" || header5 !== "遞補結果" || header4 !== "報到結果") {
+            console.log("表格欄位名稱錯誤，請確認後再執行！");
+            console.log(groupList)
+            continue;
+        }
+
+
+
         $("table > tbody > tr").each(async(index, element) => {
             if (index == 0) { //標題列
                 return;
@@ -79,7 +94,7 @@ async function updateGroupsInfo() {
             //備取且尚未遞補 => 尚未遞補
             //備取且放棄 => 已放棄
 
-            //td:eq(6)是抓取第七欄的文字 => 放棄結果
+            //td:eq(6)是抓取第七欄的文字 => 放棄狀態
             const waiver = $(element).find("td:eq(6)").text().trim();
             //td:eq(5)是抓取第六欄的文字 => 遞補結果
             const reserve = $(element).find("td:eq(5)").text().trim();
@@ -87,7 +102,7 @@ async function updateGroupsInfo() {
             const register = $(element).find("td:eq(4)").text().trim();
 
             if (waiver.includes("已放棄") || register.includes("放棄")) {
-                //td:eq(6)是抓取第七欄的文字 => 放棄結果
+                //td:eq(6)是抓取第七欄的文字 => 放棄狀態
                 status = "已放棄";
             } else if (reserve.includes("已遞補") || reserve.includes("尚未遞補")) {
                 //td:eq(4)是抓取第五欄的文字 => 報到結果
@@ -100,7 +115,7 @@ async function updateGroupsInfo() {
 
 
 
-            //td:eq(1)是抓取第一欄的文字 => 准考證號
+            //td:eq(1)是抓取第一欄的文字 => 准考證號碼
             const userId = $(element).find("td:eq(0)").text().trim();
 
 
@@ -132,7 +147,7 @@ async function updateGroupsInfo() {
              * }
              */
             // console.log({
-            //     year: "114",
+            //     year: currentYear,
             //     groupId: "NCCU_" + groupId,
             //     userId: userId,
             //     index: index,
@@ -140,7 +155,7 @@ async function updateGroupsInfo() {
             //     status: status
             // });            
             await updateTable("process", {
-                year: "114",
+                year: currentYear,
                 groupId: "NCCU_" + examNo+'_'+groupNo,
                 userId: userId
             }, {
@@ -166,7 +181,7 @@ async function updateGroupsInfo() {
             }
         */
         // console.log({
-        //     year: "114",
+        //     year: currentYear,
         //     school: "NCCU",
         //     examNo: examNo,
         //     groupNo: groupNo,
@@ -176,7 +191,7 @@ async function updateGroupsInfo() {
         //     want: want
         // });
         await updateTable("group", {
-            year: "114",
+            year: currentYear,
             school: "NCCU",
             examNo: examNo,
             groupNo: groupNo

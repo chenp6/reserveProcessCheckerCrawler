@@ -33,6 +33,7 @@ async function run() {
     await NTU.init();
     await NSYSU.init();
     await NCU.init();
+    await NCCU.init();
 
 
 
@@ -40,7 +41,6 @@ async function run() {
 
     // await CCU.init();
     // await NYCU.init();
-    // await NCCU.init();
     //await UST.init();
 
 
@@ -64,6 +64,7 @@ async function updateExams() {
     await updateNTUExams();
     await updateNSYSUExams();
     await updateNCUExams();
+    await updateNCCUExams();
 
 
 
@@ -75,7 +76,6 @@ async function updateExams() {
 
 
     
-    // await updateNCCUExams();
     // await updateNKUSTExams();
 
     //await updateUSTExams();
@@ -169,13 +169,13 @@ async function updateExams() {
 
     async function updateNCCUExams() {
         // await updateTable("exam", { school: "NCCU", examNo: year+',1', year: year }, { name: year+"碩班甄試" });
-        // await updateUpdateTime("NCCU", year+",1", year);
+        await updateUpdateTime("NCCU", year+",1", year);
 
         // await updateTable("exam", { school: "NCCU", examNo: year+',8', year: year }, { name: year+"博班甄試" });
         // await updateUpdateTime("NCCU", year+",8", year);
 
-        await updateTable("exam", { school: "NCCU", examNo: year+',2' , year: year}, { name: year+"碩士班(考試入學)" });
-        await updateUpdateTime("NCCU", year, year+",2", year);
+        // await updateTable("exam", { school: "NCCU", examNo: year+',2' , year: year}, { name: year+"碩士班(考試入學)" });
+        // await updateUpdateTime("NCCU", year, year+",2", year);
 
     }
 
